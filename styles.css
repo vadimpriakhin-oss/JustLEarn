@@ -1,10 +1,12 @@
+.container {
+  background-color: #003300; /* Dark green background */
+}
+
 .button {
-  background-color: terracotta;
-  color: black;
+  background-color: #d77d3b; /* Terracotta button */
+  color: #000000; /* Black text */
 }
+
 .button:hover {
-  background-color: cream;
-}
-body {
-  background-color: darkgreen;
+  background-color: #f2e6d4; /* Cream hover effect */
 }
