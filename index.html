@@ -3,32 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#F3E5F5">
+    <meta name="description" content="JustLEarn - Educational Quiz Application">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23D8BFD8' width='100' height='100'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%23B19CD9'>L</text></svg>">
     <title>JustLEarn</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to JustLEarn</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Courses</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>Featured Courses</h2>
-            <p>Explore our range of educational courses designed for everyone.</p>
-        </section>
-        <section>
-            <h2>Get Started</h2>
-            <p>Sign up today to start your learning journey!</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 JustLEarn. All rights reserved.</p>
-    </footer>
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="container">
+            <div class="logo">
+                <h1>JustLEarn</h1>
+                <p class="subtitle">Learn Your Way</p>
+            </div>
+
+            <div class="home-content">
+                <p class="welcome-text">Choose your learning method:</p>
+                
+                <div class="learning-modes">
+                    <button class="mode-btn" data-mode="truefalse">
+                        <div class="mode-icon">✓✗</div>
+                        <div class="mode-title">True or False</div>
+                        <div class="mode-desc">Quick yes/no answers</div>
+                    </button>
+
+                    <button class="mode-btn" data-mode="multichoice">
+                        <div class="mode-icon">◯</div>
+                        <div class="mode-title">Multiple Choice</div>
+                        <div class="mode-desc">Select the correct option</div>
+                    </button>
+
+                    <button class="mode-btn" data-mode="fillblank">
+                        <div class="mode-icon">_</div>
+                        <div class="mode-title">Fill in the Blank</div>
+                        <div class="mode-desc">Type the correct answer</div>
+                    </button>
+
+                    <button class="mode-btn" data-mode="draganddrop">
+                        <div class="mode-icon">⇄</div>
+                        <div class="mode-title">Drag & Drop</div>
+                        <div class="mode-desc">Match answers to questions</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Page -->
+    <div id="quiz" class="page">
+        <div class="container">
+            <div class="quiz-header">
+                <div class="score-counter">
+                    <span class="score-label">Score:</span>
+                    <span id="score" class="score-value">0</span>
+                </div>
+                <h2 id="mode-title" class="mode-header"></h2>
+                <div class="progress-bar">
+                    <div id="progress" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- True/False Mode -->
+            <div id="truefalse-mode" class="quiz-mode">
+                <div id="tf-question" class="question-text"></div>
+                <div class="btn-group">
+                    <button class="answer-btn tf-btn" data-answer="true">TRUE</button>
+                    <button class="answer-btn tf-btn" data-answer="false">FALSE</button>
+                </div>
+            </div>
+
+            <!-- Multiple Choice Mode -->
+            <div id="multichoice-mode" class="quiz-mode hidden">
+                <div id="mc-question" class="question-text"></div>
+                <div id="mc-options" class="options-container"></div>
+            </div>
+
+            <!-- Fill in the Blank Mode -->
+            <div id="fillblank-mode" class="quiz-mode hidden">
+                <div id="fb-question" class="question-text"></div>
+                <input type="text" id="fb-input" class="text-input" placeholder="Type your answer...">
+                <button id="fb-submit" class="answer-btn submit-btn">Submit</button>
+            </div>
+
+            <!-- Drag and Drop Mode -->
+            <div id="draganddrop-mode" class="quiz-mode hidden">
+                <div id="dd-question" class="question-text"></div>
+                <div class="drag-drop-container">
+                    <div id="dd-items" class="items-list"></div>
+                    <div id="dd-targets" class="targets-list"></div>
+                </div>
+            </div>
+
+            <button id="new-start-btn" class="new-start-btn hidden">New Start</button>
+        </div>
+    </div>
+
+    <!-- Result Animations -->
+    <div id="result-overlay" class="result-overlay hidden">
+        <div class="result-content">
+            <div id="result-animation" class="result-animation"></div>
+            <p id="result-text" class="result-text"></p>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+    </script>
 </body>
 </html>
