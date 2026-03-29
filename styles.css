@@ -95,9 +95,75 @@ input[type="text"]:focus {
     opacity: 1;
 }
 
-.drag-drop {
-    border: 2px dashed purple;
-    padding: 20px;
+.drag-drop-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 140px;
+}
+
+.drag-item {
+    background-color: #7e57c2;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: grab;
+    user-select: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.drag-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.drag-item.correct-drop {
+    background-color: #388e3c;
+    cursor: default;
+}
+
+.drag-item.wrong-drop {
+    background-color: #c62828;
+}
+
+.targets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 180px;
+}
+
+.drop-target {
+    border: 2px dashed #b39ddb;
+    border-radius: 8px;
+    padding: 8px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.drop-target.drag-over {
+    border-color: #7e57c2;
+    background-color: rgba(126, 87, 194, 0.1);
+}
+
+.drop-label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #b39ddb;
+    font-size: 0.9rem;
+}
+
+.drop-zone {
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 @media (min-width: 480px) {
