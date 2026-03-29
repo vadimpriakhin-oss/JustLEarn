@@ -4,6 +4,10 @@
     padding: 20px;
 }
 
+.hidden {
+    display: none !important;
+}
+
 body {
     background-color: darkgreen;
     color: white;
@@ -42,4 +46,78 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
     margin: 0 0 10px;
+}
+
+/* Create Mode Selection Page */
+.create-mode-page {
+    text-align: center;
+    padding: 20px;
+}
+
+.create-mode-page h2 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.create-mode-page .subtitle {
+    margin-bottom: 30px;
+    opacity: 0.85;
+}
+
+.create-mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+    margin: 0 auto 30px;
+}
+
+.create-mode-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: background-color 0.25s, border-color 0.25s;
+    font-size: 1rem;
+    text-align: left;
+}
+
+.create-mode-option-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.create-mode-option-btn .option-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.create-mode-option-btn .option-label {
+    font-weight: bold;
+    font-size: 1.05rem;
+}
+
+.create-mode-option-btn .option-desc {
+    font-size: 0.85rem;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.28);
 }
