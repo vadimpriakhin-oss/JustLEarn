@@ -1,49 +1,46 @@
-// Updated app.js
-// This script implements complete quiz logic for all 4 modes (True/False, Multiple Choice, Fill in the Blank, Drag & Drop)
+// Complete quiz logic for all 4 modes
 
-const quizModes = {
-    TRUE_FALSE: 'true_false',
-    MULTIPLE_CHOICE: 'multiple_choice',
-    FILL_IN_THE_BLANK: 'fill_in_the_blank',
-    DRAG_DROP: 'drag_drop'
+const quizData = [
+    // Your quiz data structure here
+];
+
+const modes = {
+    TRUE_FALSE: 'true-false',
+    MULTI_CHOICE: 'multiple-choice',
+    FILL_IN_BLANK: 'fill-in-blank',
+    DRAG_DROP: 'drag-drop'
 };
 
-let currentScore = 0;
-let totalQuestions = 0;
-let currentProgress = 0;
-
 function initializeQuiz(mode) {
-    // Logic for initializing the quiz based on mode
     switch (mode) {
-        case quizModes.TRUE_FALSE:
-            // Initialize True/False quiz
+        case modes.TRUE_FALSE:
+            // Logic for True/False
             break;
-        case quizModes.MULTIPLE_CHOICE:
-            // Initialize Multiple Choice quiz
+        case modes.MULTI_CHOICE:
+            // Logic for Multiple Choice
             break;
-        case quizModes.FILL_IN_THE_BLANK:
-            // Initialize Fill in the Blank quiz
+        case modes.FILL_IN_BLANK:
+            // Logic for Fill in the Blank
             break;
-        case quizModes.DRAG_DROP:
-            // Initialize Drag & Drop quiz
+        case modes.DRAG_DROP:
+            // Logic for Drag & Drop
             break;
         default:
-            throw new Error('Invalid quiz mode');
+            throw new Error('Invalid mode');
     }
 }
 
-function updateScore(points) {
-    currentScore += points;
-    // Update the score display
+document.querySelectorAll('.mode-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const selectedMode = button.dataset.mode;
+        initializeQuiz(selectedMode);
+    });
+});
+
+// Integrating with quizData
+function startQuiz() {
+    const selectedQuiz = quizData.find(quiz => quiz.mode === selectedMode);
+    // Load quiz data into the UI
 }
 
-function updateProgressBar() {
-    currentProgress = (currentScore / totalQuestions) * 100;
-    // Update the progress bar display
-}
-
-function showResults() {
-    // Logic for displaying the results and animations
-}
-
-// Implement event listeners and other game logic to manage quiz interactions
+startQuiz();
