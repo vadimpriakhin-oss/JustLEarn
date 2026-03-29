@@ -1,46 +1,47 @@
-// Complete quiz logic for all 4 modes
+// Quiz Application
 
-const quizData = [
-    // Your quiz data structure here
-];
+class QuizApp {
+    constructor() {
+        this.questions = [];
+        this.score = 0;
+    }
 
-const modes = {
-    TRUE_FALSE: 'true-false',
-    MULTI_CHOICE: 'multiple-choice',
-    FILL_IN_BLANK: 'fill-in-blank',
-    DRAG_DROP: 'drag-drop'
-};
+    addQuestion(question) {
+        this.questions.push(question);
+    }
 
-function initializeQuiz(mode) {
-    switch (mode) {
-        case modes.TRUE_FALSE:
-            // Logic for True/False
-            break;
-        case modes.MULTI_CHOICE:
-            // Logic for Multiple Choice
-            break;
-        case modes.FILL_IN_BLANK:
-            // Logic for Fill in the Blank
-            break;
-        case modes.DRAG_DROP:
-            // Logic for Drag & Drop
-            break;
-        default:
-            throw new Error('Invalid mode');
+    // Method for True/False Questions
+    trueFalseQuestion(question, answer) {
+        // Logic for True/False question
+    }
+
+    // Method for Multiple Choice Questions
+    multipleChoiceQuestion(question, choices, answer) {
+        // Logic for Multiple Choice question
+    }
+
+    // Method for Fill in the Blank Questions
+    fillInTheBlankQuestion(question, answer) {
+        // Logic for Fill in the Blank question
+    }
+
+    // Method for Drag & Drop Questions
+    dragAndDropQuestion(question, items, correctOrder) {
+        // Logic for Drag & Drop question
+    }
+
+    calculateScore() {
+        // Logic for score tracking
+    }
+
+    displayScore() {
+        console.log(`Your score is: ${this.score}`);
     }
 }
 
-document.querySelectorAll('.mode-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        const selectedMode = button.dataset.mode;
-        initializeQuiz(selectedMode);
-    });
-});
+// Example usage
+let quizApp = new QuizApp();
+quizApp.addQuestion({type: 'true/false', text: 'Is the sky blue?', answer: true});
 
-// Integrating with quizData
-function startQuiz() {
-    const selectedQuiz = quizData.find(quiz => quiz.mode === selectedMode);
-    // Load quiz data into the UI
-}
+// Add more questions as needed
 
-startQuiz();
