@@ -43,10 +43,41 @@
             </div>
         </div>
         
-        <div class="add-term-page hidden" id="addTermPage">
-            <div class="neon-logo">
-                <h1 class="neon-text">JustLEarn</h1>
+        <!-- Create Mode Selection Page -->
+        <div class="create-mode-page hidden" id="createModePage">
+            <h2>Create Terms</h2>
+            <p class="subtitle">Choose how you want to add terms</p>
+
+            <div class="create-mode-options">
+                <button class="create-mode-option-btn" data-create-mode="single">
+                    <span class="option-icon">📝</span>
+                    <div>
+                        <div class="option-label">Single Term</div>
+                        <div class="option-desc">Add one term with its answer</div>
+                    </div>
+                </button>
+
+                <button class="create-mode-option-btn" data-create-mode="batch">
+                    <span class="option-icon">📚</span>
+                    <div>
+                        <div class="option-label">Batch Mode</div>
+                        <div class="option-desc">Add multiple terms at once</div>
+                    </div>
+                </button>
+
+                <button class="create-mode-option-btn" data-create-mode="import">
+                    <span class="option-icon">📤</span>
+                    <div>
+                        <div class="option-label">Import from File</div>
+                        <div class="option-desc">Upload or paste terms from a file</div>
+                    </div>
+                </button>
             </div>
+
+            <button id="createModeBackBtn" class="btn-secondary">Back to Home</button>
+        </div>
+
+        <div class="add-term-page hidden" id="addTermPage">
             
             <h2>Add Custom Term</h2>
             
@@ -62,7 +93,7 @@
             
             <div class="button-group">
                 <button id="addBtn" class="btn-primary">Add Term</button>
-                <button id="backBtn" class="btn-secondary">Back to Home</button>
+                <button id="backBtn" class="btn-secondary">Back</button>
             </div>
             
             <div id="customTermsList" class="terms-list">
