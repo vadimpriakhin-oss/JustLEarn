@@ -1,12 +1,45 @@
 .container {
-  background-color: #003300; /* Dark green background */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.button {
-  background-color: #d77d3b; /* Terracotta button */
-  color: #000000; /* Black text */
+body {
+    background-color: darkgreen;
+    color: white;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
 }
 
-.button:hover {
-  background-color: #f2e6d4; /* Cream hover effect */
+button, .button {
+    background-color: terracotta;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover, .button:hover {
+    background-color: cream;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type='text'], input[type='email'], textarea {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+p {
+    margin: 0 0 10px;
 }
