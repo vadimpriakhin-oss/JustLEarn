@@ -47,4 +47,4 @@ const quizData = {
     ]
 };
 
-export default quizData;
+// quizData is used as a global variable by app.js
