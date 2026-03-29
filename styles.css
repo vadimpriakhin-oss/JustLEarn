@@ -1,3 +1,51 @@
+.hidden {
+    display: none !important;
+}
+
+.create-mode-selection {
+    text-align: center;
+}
+
+.mode-selection-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.mode-option {
+    background-color: #1a5f3f;
+    color: white;
+    border: 2px solid #2d8659;
+    padding: 30px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.mode-option:hover {
+    background-color: #2d8659;
+    transform: translateY(-5px);
+    border-color: #4db888;
+}
+
+.mode-option .mode-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.mode-option .mode-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.mode-option .mode-desc {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;

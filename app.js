@@ -1,5 +1,24 @@
 // Complete quiz functionality for all 4 modes: true/false, multiple choice, fill in blank, drag and drop
 
+// Navigation between pages
+function showHomePage() {
+    document.getElementById('homePage').classList.remove('hidden');
+    document.getElementById('createModeSelectionPage').classList.add('hidden');
+    document.getElementById('addTermPage').classList.add('hidden');
+}
+
+function showCreateModeSelection() {
+    document.getElementById('homePage').classList.add('hidden');
+    document.getElementById('createModeSelectionPage').classList.remove('hidden');
+    document.getElementById('addTermPage').classList.add('hidden');
+}
+
+function showAddTermPage() {
+    document.getElementById('homePage').classList.add('hidden');
+    document.getElementById('createModeSelectionPage').classList.add('hidden');
+    document.getElementById('addTermPage').classList.remove('hidden');
+}
+
 // Custom terms management and initialization
 const QuizTerms = {
     trueFalse: [
@@ -61,5 +80,26 @@ function calculateScore() {
 function initQuiz() {
     // Initialization logic for starting the quiz
 }
+
+// Event listeners for navigation
+document.addEventListener('DOMContentLoaded', function() {
+    // "Add Custom Term" button from home page
+    document.querySelector('[data-mode="addterm"]').addEventListener('click', showCreateModeSelection);
+
+    // Back button from mode selection
+    document.getElementById('backFromModeBtn').addEventListener('click', showHomePage);
+
+    // Mode selection buttons
+    document.querySelectorAll('.mode-option').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const mode = this.getAttribute('data-create-mode');
+            console.log('Selected mode:', mode);
+            showAddTermPage();
+        });
+    });
+
+    // Back button from add term page
+    document.getElementById('backBtn').addEventListener('click', showHomePage);
+});
 
 initQuiz();
