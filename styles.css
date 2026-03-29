@@ -1,107 +1,89 @@
-.page {
-    margin: 0;
-    padding: 20px;
-    background-color: purple;
-    color: white;
+.quiz-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    transition: background-color 0.3s;
+    margin: 20px;
 }
 
-.page.active {
-    background-color: #5c4b8a;
+.quiz-question {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
-.hidden {
-    display: none;
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-.mode-btn {
-    background-color: #7e57c2;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+.quiz-option {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.mode-btn:hover {
-    background-color: #5e35b1;
-}
-
-.answer-btn, .tf-btn {
-    background-color: #6d4c41;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.answer-btn:hover, .tf-btn:hover {
-    background-color: #4e2a1f;
+.quiz-option:hover {
+    background-color: #f0f0f0;
 }
 
 .progress-bar {
-    background-color: #e0e0e0;
+    width: 100%;
+    background-color: #f3f3f3;
     border-radius: 5px;
     overflow: hidden;
+    margin: 20px 0;
 }
 
-.progress-fill {
-    background-color: purple;
-    height: 100%;
-    width: 0;
-    transition: width 0.4s ease-in-out;
+.progress {
+    height: 10px;
+    background-color: #4caf50;
+    width: 0%;
+    transition: width 0.5s;
 }
 
-.question {
-    font-size: 20px;
-    margin: 10px 0;
-}
-
-.options-container {
-    display: flex;
-    flex-direction: column;
-}
-
-input[type="text"] {
+.form-input {
+    width: 100%;
     padding: 10px;
+    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    transition: border-color 0.3s;
 }
 
-input[type="text"]:focus {
-    border-color: purple;
+.submit-button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.result-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s;
+.submit-button:hover {
+    background-color: #45a049;
 }
 
-.result-overlay.active {
-    opacity: 1;
+.result-animation {
+    animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .drag-drop {
-    border: 2px dashed purple;
+    display: flex;
+    border: 2px dashed #ccc;
     padding: 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
-@media (min-width: 480px) {
-    .page {
-        padding: 40px;
-    }
+.drag-drop.hover {
+    background-color: #e0ffe0;
 }
