@@ -1,89 +1,37 @@
-.quiz-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 20px;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #0a0a0a;
 }
 
-.quiz-question {
-    font-size: 24px;
-    margin-bottom: 10px;
+.header {
+  color: #fff;
+  text-align: center;
+  font-family: 'Sans-serif';
+  text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 20px #00ffcc;
 }
 
-.quiz-options {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+.button {
+  background-color: #00ffcc;
+  border: none;
+  border-radius: 5px;
+  color: #0a0a0a;
+  padding: 10px 20px;
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.quiz-option {
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.button:hover {
+  background-color: #ff00ff;
+  text-shadow: 0 0 20px #00ffcc, 0 0 30px #00ffcc;
 }
 
-.quiz-option:hover {
-    background-color: #f0f0f0;
-}
-
-.progress-bar {
-    width: 100%;
-    background-color: #f3f3f3;
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 20px 0;
-}
-
-.progress {
-    height: 10px;
-    background-color: #4caf50;
-    width: 0%;
-    transition: width 0.5s;
-}
-
-.form-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.submit-button {
-    padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.submit-button:hover {
-    background-color: #45a049;
-}
-
-.result-animation {
-    animation: fadeIn 1s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.drag-drop {
-    display: flex;
-    border: 2px dashed #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.drag-drop.hover {
-    background-color: #e0ffe0;
+.footer {
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc;
 }
