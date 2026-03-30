@@ -1,17 +1,56 @@
-<section>
-    <h2>Create Mode Selection</h2>
-    <div>
-        <label>
-            <input type="radio" name="mode" value="single_term">
-            Single Term
-        </label>
-        <label>
-            <input type="radio" name="mode" value="batch_mode">
-            Batch Mode
-        </label>
-        <label>
-            <input type="radio" name="mode" value="import_file">
-            Import from File
-        </label>
-    </div>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JustLearn</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="path/to/neon-logo.png" alt="Neon Logo" />
+        <h1>Welcome to JustLearn</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#single-term">Single Term</a></li>
+            <li><a href="#batch-mode">Batch Mode</a></li>
+            <li><a href="#import-file">Import from File</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="home">
+            <h2>Home Page</h2>
+            <p>This is the homepage for JustLearn, where you can choose your learning mode.</p>
+        </section>
+        <section id="create-mode">
+            <h2>Create Mode Selection</h2>
+            <p>Select a mode to get started:</p>
+            <input type="radio" id="single-term" name="mode" value="single">
+            <label for="single-term">Single Term</label><br>
+            <input type="radio" id="batch-mode" name="mode" value="batch">
+            <label for="batch-mode">Batch Mode</label><br>
+            <input type="radio" id="import-file" name="mode" value="import">
+            <label for="import-file">Import from File</label><br>
+        </section>
+        <section id="add-term">
+            <h2>Add Term Page</h2>
+            <form action="#" method="post">
+                <label for="term">Term:</label>
+                <input type="text" id="term" name="term"><br>
+                <label for="definition">Definition:</label>
+                <textarea id="definition" name="definition"></textarea><br>
+                <input type="submit" value="Add Term">
+            </form>
+        </section>
+        <section id="quiz">
+            <h2>Quiz Page</h2>
+            <p>Test your knowledge!</p>
+            <button onclick="startQuiz()">Start Quiz</button>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 JustLearn. All rights reserved.</p>
+    </footer>
+</body>
+</html>
