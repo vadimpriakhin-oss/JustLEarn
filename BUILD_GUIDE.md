@@ -1,88 +1,112 @@
-# BUILD_GUIDE.md
+# Build Guide — JustLEarn Mobile App
 
-## Comprehensive Build Instructions for App Store and Google Play Deployment
-
-This guide provides detailed steps for setting up, building, and deploying your application on both Android and iOS platforms.
+This guide walks through setting up [Capacitor](https://capacitorjs.com/) to package the JustLEarn web application for iOS (App Store) and Android (Google Play).
 
 ---
 
-## Setup
-1. **Prerequisites:**  
-   - Install [Node.js](https://nodejs.org/) (version X.X.X).
-   - Install [Android Studio](https://developer.android.com/studio) for Android development.
-   - Install [Xcode](https://developer.apple.com/xcode/) for iOS development.
-   - Install [Git](https://git-scm.com/) for version control.
+## Prerequisites
 
-2. **Clone the Repository:**  
-   ```bash
-   git clone https://github.com/vadimpriakhin-oss/JustLEarn.git
-   cd JustLEarn
-   ```
-
-3. **Install Dependencies:**  
-   ```bash
-   npm install
-   ```
+| Tool | Required for | Link |
+|------|-------------|------|
+| Node.js ≥ 16 | All platforms | https://nodejs.org/ |
+| Xcode ≥ 15 | iOS only (macOS required) | https://developer.apple.com/xcode/ |
+| Android Studio | Android only | https://developer.android.com/studio |
+| CocoaPods | iOS only | `sudo gem install cocoapods` |
 
 ---
 
-## Android Build Steps
-1. **Open Android Studio:**  
-   - Import the project as an existing project.
+## 1. Install Dependencies
 
-2. **Configure Build Variants:**  
-   - Go to the *Build Variants* tab and select the desired variant (release/debug).
-
-3. **Build the APK:**  
-   - Click on *Build* in the top menu, then select *Build Bundle(s)/APK(s)* -> *Build APK(s)*.
-   - Follow the prompts to complete the build.
-
-4. **Locate the APK:**  
-   - Find the built APK in `app/build/outputs/apk/` directory.
-
-5. **Deploy to Google Play:**  
-   - Sign up for a Google Play Developer account.
-   - Follow the [Google Play Console](https://play.google.com/console/) instructions to upload your APK.
+```bash
+npm install
+```
 
 ---
 
-## iOS Build Steps
-1. **Open Xcode:**  
-   - Open the project workspace file (`.xcworkspace`).
+## 2. Add Native Platforms
 
-2. **Select Device:**  
-   - Choose a target device or simulator from the toolbar.
+Run these commands once to create the `ios/` and `android/` project directories:
 
-3. **Build the App:**  
-   - Click on *Product* in the top menu, then select *Archive*.
-   - Wait for the build process to finish.
+```bash
+npm run cap:add:ios      # creates ios/ directory
+npm run cap:add:android  # creates android/ directory
+```
 
-4. **Locate the Build:**  
-   - Open the Organizer window in Xcode to find your archived builds.
-
-5. **Deploy to App Store:**  
-   - Use Xcode or [App Store Connect](https://appstoreconnect.apple.com/) to upload your app.
-   - Follow the steps for submitting the app for review.
+> **Note:** The `ios/` and `android/` directories are listed in `.gitignore` and are not committed to Git. Each developer or CI environment must run these commands locally.
 
 ---
 
-## Required Materials
-- **For Android:**  
-   - Google Play Developer Account.
-   - Keystore file for signing APKs.
+## 3. Sync Web Assets to Native Projects
 
-- **For iOS:**  
-   - Apple Developer Account.
-   - App Icons and Splash Screens.
-   - App Privacy Policy.
+After any change to the web source files, sync them into the native projects:
+
+```bash
+npm run cap:sync
+```
+
+---
+
+## 4. Open in Native IDE
+
+```bash
+npm run cap:open:ios      # opens Xcode
+npm run cap:open:android  # opens Android Studio
+```
+
+---
+
+## 5. App Icons and Splash Screens
+
+Use the [@capacitor/assets](https://capacitorjs.com/docs/guides/splash-screens-and-icons) tool to generate all required icon and splash screen sizes from a single source image:
+
+```bash
+npm install --save-dev @capacitor/assets
+
+# Place your source files:
+#   assets/icon.png       (1024×1024 px, no transparency)
+#   assets/splash.png     (2732×2732 px)
+
+npx capacitor-assets generate
+```
+
+---
+
+## 6. Build Release Versions
+
+```bash
+npm run build:ios      # builds iOS release via Xcode
+npm run build:android  # builds Android release via Android Studio
+```
+
+---
+
+## 7. Deploying to the App Store (iOS)
+
+1. Enrol in the [Apple Developer Program](https://developer.apple.com/programs/) ($99/year).
+2. In Xcode, set your **Team** under *Signing & Capabilities*.
+3. Choose *Product → Archive* to create an archive.
+4. In the Organizer window, click **Distribute App** and follow the upload wizard.
+5. Complete the submission in [App Store Connect](https://appstoreconnect.apple.com/).
+
+Reference: [Distributing your app — Apple Documentation](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases)
+
+---
+
+## 8. Deploying to Google Play (Android)
+
+1. Create a [Google Play Developer Account](https://play.google.com/console/) ($25 one-time fee).
+2. In Android Studio, generate a signed App Bundle (*Build → Generate Signed Bundle / APK*).
+3. Upload the `.aab` file in the Google Play Console under *Production → Create new release*.
+4. Fill in the store listing and submit for review.
+
+Reference: [Publish your app — Android Documentation](https://developer.android.com/studio/publish)
 
 ---
 
 ## Helpful Links
-- [React Native Documentation](https://reactnative.dev/docs/getting-started)
-- [Building and Running Apps on Android](https://developer.android.com/studio/run)
-- [Building and Publishing Your App](https://developer.apple.com/documentation/xcode/distributing-your-app)
 
----
-
-For any questions or issues, please refer to our GitHub discussions or reach out to the team.
+- [Capacitor Documentation](https://capacitorjs.com/docs)
+- [Capacitor iOS Guide](https://capacitorjs.com/docs/ios)
+- [Capacitor Android Guide](https://capacitorjs.com/docs/android)
+- [App Store Connect Help](https://appstoreconnect.apple.com/)
+- [Google Play Console Help](https://play.google.com/console/about/)
