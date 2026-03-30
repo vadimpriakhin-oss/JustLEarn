@@ -2,23 +2,165 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JustLEarn">
     <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                }).catch(function(error) {
-                    console.error('Service Worker registration failed:', error);
-                });
-            });
-        }
-    </script>
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
     <title>JustLEarn</title>
 </head>
 <body>
-    <h1>Welcome to JustLEarn</h1>
-    <p>Your content here...</p>
+
+    <!-- ===== HOME SCREEN ===== -->
+    <div id="screen-home" class="screen active">
+        <div class="home-container">
+            <div class="app-logo">
+                <h1 class="app-title">JustLEarn</h1>
+                <p class="app-subtitle">Master anything, one quiz at a time</p>
+            </div>
+            <div class="mode-buttons">
+                <button class="mode-btn btn-learn" id="btn-true-false" onclick="startQuiz('trueFalse')">
+                    <span class="btn-icon">📚</span>
+                    <span class="btn-label">Learn Mode</span>
+                    <span class="btn-desc">True / False</span>
+                </button>
+                <button class="mode-btn btn-choice" id="btn-multiple-choice" onclick="startQuiz('multipleChoice')">
+                    <span class="btn-icon">🎯</span>
+                    <span class="btn-label">Multiple Choice</span>
+                    <span class="btn-desc">Pick the right answer</span>
+                </button>
+                <button class="mode-btn btn-fill" id="btn-fill-blank" onclick="startQuiz('fillBlank')">
+                    <span class="btn-icon">✏️</span>
+                    <span class="btn-label">Fill the Blank</span>
+                    <span class="btn-desc">Type your answer</span>
+                </button>
+                <button class="mode-btn btn-drag" id="btn-drag-drop" onclick="startQuiz('dragDrop')">
+                    <span class="btn-icon">🔀</span>
+                    <span class="btn-label">Drag &amp; Drop</span>
+                    <span class="btn-desc">Match term to definition</span>
+                </button>
+                <button class="mode-btn btn-create" id="btn-create-terms" onclick="showCreateScreen()">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-label">Create Terms</span>
+                    <span class="btn-desc">Add your own flashcards</span>
+                </button>
+            </div>
+            <div class="terms-count-info" id="terms-count-info"></div>
+        </div>
+    </div>
+
+    <!-- ===== CREATE TERMS SCREEN ===== -->
+    <div id="screen-create" class="screen">
+        <div class="create-container">
+            <div class="screen-header">
+                <button class="home-btn" onclick="goHome()">🏠 Home</button>
+                <h2 class="screen-title">Create Terms</h2>
+                <button class="save-btn" onclick="saveTerms()">💾 Save</button>
+            </div>
+            <div class="create-columns-header">
+                <span>Term</span>
+                <span>Definition</span>
+            </div>
+            <div id="terms-input-list" class="terms-input-list"></div>
+            <button class="add-field-btn" onclick="addTermField()">➕ Add Term</button>
+            <div id="save-message" class="save-message"></div>
+            <div id="saved-terms-display" class="saved-terms-display">
+                <h3 class="saved-terms-title">Saved Terms</h3>
+                <div id="saved-terms-list" class="saved-terms-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== QUIZ SCREEN ===== -->
+    <div id="screen-quiz" class="screen">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <button class="home-btn" onclick="goHome()">🏠 Home</button>
+                <span class="quiz-mode-name" id="quiz-mode-name">Quiz</span>
+                <span class="quiz-score" id="quiz-score">0 / 0</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="quiz-card" id="quiz-card">
+                <div class="quiz-question-label">Term</div>
+                <div class="quiz-question" id="quiz-question"></div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback" id="feedback"></div>
+
+            <!-- True/False Mode -->
+            <div id="mode-truefalse" class="mode-panel">
+                <div class="tf-buttons">
+                    <button class="tf-btn tf-true" onclick="answerTrueFalse(true)">✅ True</button>
+                    <button class="tf-btn tf-false" onclick="answerTrueFalse(false)">❌ False</button>
+                </div>
+                <div class="tf-shown-def" id="tf-shown-def"></div>
+            </div>
+
+            <!-- Multiple Choice Mode -->
+            <div id="mode-multiplechoice" class="mode-panel">
+                <div class="mc-options" id="mc-options"></div>
+            </div>
+
+            <!-- Fill the Blank Mode -->
+            <div id="mode-fillblank" class="mode-panel">
+                <div class="fill-input-row">
+                    <input type="text" id="fill-input" class="fill-input" placeholder="Type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="handleFillKeydown(event)">
+                    <button class="fill-submit-btn" onclick="submitFillBlank()">Submit</button>
+                </div>
+            </div>
+
+            <!-- Drag & Drop Mode -->
+            <div id="mode-dragdrop" class="mode-panel">
+                <div class="drag-drop-area">
+                    <div class="drag-cards" id="drag-cards"></div>
+                    <div class="drop-zone" id="drop-zone" 
+                         ondragover="event.preventDefault()" 
+                         ondrop="handleDrop(event)"
+                         ontouchend="handleTouchDrop(event)">
+                        <span id="drop-zone-text">Drop the correct answer here</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Button -->
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display:none">Next ➜</button>
+        </div>
+    </div>
+
+    <!-- ===== RESULTS SCREEN ===== -->
+    <div id="screen-results" class="screen">
+        <div class="results-container">
+            <div class="results-emoji" id="results-emoji">🎉</div>
+            <h2 class="results-title">Quiz Complete!</h2>
+            <div class="results-score" id="results-score"></div>
+            <div class="results-message" id="results-message"></div>
+            <div class="results-buttons">
+                <button class="play-again-btn" id="play-again-btn" onclick="playAgain()">🔄 Play Again</button>
+                <button class="results-home-btn" onclick="goHome()">🏠 Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function (registration) {
+                        console.log('SW registered:', registration.scope);
+                    }).catch(function (err) {
+                        console.log('SW registration failed:', err);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
