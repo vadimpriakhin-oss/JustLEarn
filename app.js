@@ -4,7 +4,8 @@ let appState = {
     currentQuizIndex: 0,
     score: { correct: 0, total: 0 },
     currentQuizMode: null,
-    shuffledTerms: []
+    shuffledTerms: [],
+    currentTrueFalseIsCorrect: true
 };
 
 const DEFAULT_TERMS = [
@@ -20,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTerms();
     showHomeScreen();
 });
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 function loadTerms() {
     const stored = localStorage.getItem('justlearnTerms');
@@ -68,16 +78,17 @@ function showCreateScreen() {
 
 function renderTermFields() {
     const container = document.getElementById('termsContainer');
-    container.innerHTML = '';
+    let html = '';
     appState.userTerms.forEach((item, index) => {
-        container.innerHTML += `
+        html += `
             <div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                <input type="text" placeholder="Term" value="${item.term}" onchange="appState.userTerms[${index}].term = this.value" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px; box-sizing: border-box;">
-                <textarea placeholder="Definition" onchange="appState.userTerms[${index}].definition = this.value" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; min-height: 60px; font-size: 14px; box-sizing: border-box;">${item.definition}</textarea>
+                <input type="text" placeholder="Term" value="${escapeHtml(item.term)}" onchange="appState.userTerms[${index}].term = this.value" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px; box-sizing: border-box;">
+                <textarea placeholder="Definition" onchange="appState.userTerms[${index}].definition = this.value" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; min-height: 60px; font-size: 14px; box-sizing: border-box;">${escapeHtml(item.definition)}</textarea>
                 <button onclick="removeTermField(${index})" style="width: 100%; background: #ff3333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold;">🗑️ Delete</button>
             </div>
         `;
     });
+    container.innerHTML = html;
 }
 
 function addTermField() {
@@ -98,7 +109,7 @@ function renderTermsList() {
     }
     let html = `<h3 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">📋 Terms: ${appState.userTerms.length}</h3><ul style="list-style: none; padding: 0;">`;
     appState.userTerms.forEach((item, i) => {
-        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${item.term}</strong><br/><span style="color: #aaa; font-size: 12px;">${item.definition}</span></li>`;
+        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${escapeHtml(item.term)}</strong><br/><span style="color: #aaa; font-size: 12px;">${escapeHtml(item.definition)}</span></li>`;
     });
     list.innerHTML = html + '</ul>';
 }
@@ -120,6 +131,10 @@ function startQuiz(mode) {
         showCreateScreen();
         return;
     }
+    if (mode === 'true-false' && appState.userTerms.length < 2) {
+        alert('True/False mode requires at least 2 terms to generate meaningful questions.');
+        return;
+    }
     appState.currentQuizMode = mode;
     appState.currentQuizIndex = 0;
     appState.score = { correct: 0, total: appState.userTerms.length };
@@ -137,6 +152,15 @@ function showQuizScreen() {
     const progress = appState.currentQuizIndex + 1;
     const total = appState.shuffledTerms.length;
     const modeName = appState.currentQuizMode.replace('-', ' ').toUpperCase();
+
+    // For true-false: randomly decide whether to show the correct or a wrong definition
+    let trueFalseDefinition = '';
+    if (appState.currentQuizMode === 'true-false') {
+        const wrongOptions = getRandomWrong(term.definition, 1);
+        const showCorrect = wrongOptions.length === 0 || Math.random() < 0.5;
+        appState.currentTrueFalseIsCorrect = showCorrect;
+        trueFalseDefinition = showCorrect ? term.definition : wrongOptions[0];
+    }
     
     let content = `<div style="padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -148,7 +172,8 @@ function showQuizScreen() {
         </div>
         <p style="color: #888; text-align: center;">Question ${progress}/${total}</p>
         <div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <h3 style="margin: 0; color: #00ffcc;">${term.term}</h3>
+            <h3 style="margin: 0; color: #00ffcc;">${escapeHtml(term.term)}</h3>
+            ${appState.currentQuizMode === 'true-false' ? `<p style="margin: 10px 0 0; color: #aaa; font-size: 14px;">${escapeHtml(trueFalseDefinition)}</p>` : ''}
         </div>`;
     
     if (appState.currentQuizMode === 'true-false') {
@@ -159,10 +184,9 @@ function showQuizScreen() {
     } else if (appState.currentQuizMode === 'multiple-choice') {
         const wrong = getRandomWrong(term.definition, 3);
         const options = shuffle([term.definition, ...wrong]);
-        content += '<div style="display: flex; flex-direction: column; gap: 10px;">';
+        content += '<div id="mcOptions" style="display: flex; flex-direction: column; gap: 10px;">';
         options.forEach((opt, i) => {
-            const safeOpt = opt.replace(/'/g, "\\'").replace(/"/g, '\\"');
-            content += `<button onclick="checkAnswer(\\"${safeOpt}\\")" style="background: #1a1a2e; color: #00ffcc; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: bold;">${String.fromCharCode(65+i)}: ${opt}</button>`;
+            content += `<button data-answer="${escapeHtml(opt)}" style="background: #1a1a2e; color: #00ffcc; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: bold;">${String.fromCharCode(65+i)}: ${escapeHtml(opt)}</button>`;
         });
         content += '</div>';
     } else if (appState.currentQuizMode === 'fill-blank') {
@@ -172,8 +196,16 @@ function showQuizScreen() {
     
     content += `<button onclick="showHomeScreen()" style="width: 100%; margin-top: 20px; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button></div>`;
     
-    document.querySelector('main').style.backgroundColor = '#0a0a0a';
-    document.querySelector('main').innerHTML = content;
+    const main = document.querySelector('main');
+    main.style.backgroundColor = '#0a0a0a';
+    main.innerHTML = content;
+
+    // Attach safe event listeners for multiple choice (avoids XSS via inline onclick)
+    if (appState.currentQuizMode === 'multiple-choice') {
+        document.querySelectorAll('#mcOptions [data-answer]').forEach(btn => {
+            btn.addEventListener('click', () => checkAnswer(btn.dataset.answer));
+        });
+    }
 }
 
 function checkAnswer(userAnswer) {
@@ -181,7 +213,7 @@ function checkAnswer(userAnswer) {
     let isCorrect = false;
     
     if (appState.currentQuizMode === 'true-false') {
-        isCorrect = (userAnswer === 'true') === (correct.toLowerCase().includes('true'));
+        isCorrect = (userAnswer === 'true') === appState.currentTrueFalseIsCorrect;
     } else {
         isCorrect = userAnswer === correct;
     }

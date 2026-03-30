@@ -3,57 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quizlet-like Learning Application</title>
+    <title>JustLEarn</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <header>
-        <h1>Welcome to the Quizlet-like Learning Application</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#quiz">Quiz Game Modes</a></li>
-                <li><a href="#create">Create Terms</a></li>
-                <li><a href="#results">Results</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="home">
-            <h2>Home Screen</h2>
-            <p>Explore different modes of learning.</p>
-        </section>
-
-        <section id="quiz">
-            <h2>Quiz Game Modes</h2>
-            <h3>1. Classic Mode</h3>
-            <p>Test your knowledge in a classic quiz format.</p>
-            <h3>2. Match Mode</h3>
-            <p>Match terms with their definitions in a fun game.</p>
-            <h3>3. Test Mode</h3>
-            <p>Take a test on various topics.</p>
-            <h3>4. Flashcard Mode</h3>
-            <p>Review terms and definitions with flashcards.</p>
-        </section>
-
-        <section id="create">
-            <h2>Create Terms</h2>
-            <form>
-                <label for="term">Term:</label>
-                <input type="text" id="term" name="term" required>
-                <label for="definition">Definition:</label>
-                <textarea id="definition" name="definition" required></textarea>
-                <button type="submit">Add Term</button>
-            </form>
-        </section>
-
-        <section id="results">
-            <h2>Results</h2>
-            <p>Your quiz results will be displayed here.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Quizlet-like Learning Application</p>
-    </footer>
+    <main></main>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
 </body>
 </html>
