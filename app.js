@@ -205,10 +205,19 @@ const App = (() => {
         });
     }
 
+    // ─── Toast notification ──────────────────────────────────
+    function showToast(msg, warn) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast' + (warn ? ' warn' : '');
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+
     // ─── GAME: Start ────────────────────────────────────────────
     function startGame(mode) {
         if (terms.length < 2) {
-            alert('Please create at least 2 terms before playing!');
+            showToast('⚠️ Please create at least 2 terms before playing!', true);
             return;
         }
 
