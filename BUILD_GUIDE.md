@@ -1,88 +1,137 @@
 # BUILD_GUIDE.md
 
-## Comprehensive Build Instructions for App Store and Google Play Deployment
+## 🚀 Публикация JustLEarn на App Store и Google Play через Expo
 
-This guide provides detailed steps for setting up, building, and deploying your application on both Android and iOS platforms.
-
----
-
-## Setup
-1. **Prerequisites:**  
-   - Install [Node.js](https://nodejs.org/) (version X.X.X).
-   - Install [Android Studio](https://developer.android.com/studio) for Android development.
-   - Install [Xcode](https://developer.apple.com/xcode/) for iOS development.
-   - Install [Git](https://git-scm.com/) for version control.
-
-2. **Clone the Repository:**  
-   ```bash
-   git clone https://github.com/vadimpriakhin-oss/JustLEarn.git
-   cd JustLEarn
-   ```
-
-3. **Install Dependencies:**  
-   ```bash
-   npm install
-   ```
+Этот гайд поможет вам опубликовать приложение JustLEarn на обеих платформах с минимальными усилиями.
 
 ---
 
-## Android Build Steps
-1. **Open Android Studio:**  
-   - Import the project as an existing project.
+## Шаг 1: Базовая подготовка (5 минут)
 
-2. **Configure Build Variants:**  
-   - Go to the *Build Variants* tab and select the desired variant (release/debug).
+```bash
+# 1. Установите Expo CLI и EAS CLI
+npm install -g expo-cli eas-cli
 
-3. **Build the APK:**  
-   - Click on *Build* in the top menu, then select *Build Bundle(s)/APK(s)* -> *Build APK(s)*.
-   - Follow the prompts to complete the build.
+# 2. Создайте аккаунт на https://expo.dev и авторизуйтесь
+eas login
 
-4. **Locate the APK:**  
-   - Find the built APK in `app/build/outputs/apk/` directory.
+# 3. Установите зависимости проекта
+npm install
 
-5. **Deploy to Google Play:**  
-   - Sign up for a Google Play Developer account.
-   - Follow the [Google Play Console](https://play.google.com/console/) instructions to upload your APK.
+# 4. Инициализируйте EAS в проекте
+eas build:configure
+```
 
 ---
 
-## iOS Build Steps
-1. **Open Xcode:**  
-   - Open the project workspace file (`.xcworkspace`).
+## Шаг 2: Аккаунты разработчика
 
-2. **Select Device:**  
-   - Choose a target device or simulator from the toolbar.
+### Apple (App Store)
+- Создайте или используйте **Apple ID**: https://appleid.apple.com/account
+- Запишитесь в **Apple Developer Program** ($99/год): https://developer.apple.com/programs/
+- Включите **двухфакторную аутентификацию** на вашем Apple ID
 
-3. **Build the App:**  
-   - Click on *Product* in the top menu, then select *Archive*.
-   - Wait for the build process to finish.
-
-4. **Locate the Build:**  
-   - Open the Organizer window in Xcode to find your archived builds.
-
-5. **Deploy to App Store:**  
-   - Use Xcode or [App Store Connect](https://appstoreconnect.apple.com/) to upload your app.
-   - Follow the steps for submitting the app for review.
+### Google (Google Play)
+- Создайте **Google Play Developer Account** (разовый взнос $25): https://play.google.com/console/
 
 ---
 
-## Required Materials
-- **For Android:**  
-   - Google Play Developer Account.
-   - Keystore file for signing APKs.
+## Шаг 3: Публикация одной командой
 
-- **For iOS:**  
-   - Apple Developer Account.
-   - App Icons and Splash Screens.
-   - App Privacy Policy.
+### iOS (App Store)
+```bash
+# Собрать и загрузить на App Store автоматически
+eas build --platform ios --auto-submit
+
+# Что будет запрошено:
+# - Email и пароль Apple ID
+# - Двухфакторный код из SMS
+```
+
+### Android (Google Play)
+```bash
+# Собрать и загрузить на Google Play автоматически
+eas build --platform android --auto-submit
+```
+
+### Обе платформы
+```bash
+eas build --platform all
+```
 
 ---
 
-## Helpful Links
-- [React Native Documentation](https://reactnative.dev/docs/getting-started)
-- [Building and Running Apps on Android](https://developer.android.com/studio/run)
-- [Building and Publishing Your App](https://developer.apple.com/documentation/xcode/distributing-your-app)
+## Шаг 4: Заполните данные в браузере
+
+### App Store Connect
+Откройте: https://appstoreconnect.apple.com/
+
+Заполните:
+- ✏️ **Скриншоты** (2–10 штук, размер 1242 × 2208 px для iPhone)
+- ✏️ **Название** приложения (до 30 символов)
+- ✏️ **Описание** (что делает приложение, до 4000 символов)
+- ✏️ **Ключевые слова** (learning, education, flashcards и т.д.)
+- ✏️ **Категория** → Education
+- ✏️ **Рейтинг контента** (нажмите кнопку и заполните анкету)
+- ✏️ **Privacy Policy URL** (ссылка на ваш `PRIVACY_POLICY.md`)
+
+### Google Play Console
+Откройте: https://play.google.com/console/
+
+Заполните аналогичные поля + обязательно добавьте:
+- ✏️ **Основной скриншот** и функциональное изображение (1024 × 500 px)
+- ✏️ **Краткое описание** (до 80 символов)
 
 ---
 
-For any questions or issues, please refer to our GitHub discussions or reach out to the team.
+## Шаг 5: Отправьте на ревью (1 клик)
+
+**App Store Connect:** нажмите **"Submit for Review"**
+**Google Play Console:** нажмите **"Review and publish"**
+
+Ожидание:
+- **App Store**: обычно 24–48 часов
+- **Google Play**: обычно 1–3 дней
+
+---
+
+## Шаг 6: Обновление приложения
+
+```bash
+# Собрать новую версию (предварительно обновите "version" в app.json)
+eas build --platform all
+
+# Загрузить на магазины
+eas submit --platform ios
+eas submit --platform android
+```
+
+---
+
+## Быстрые команды
+
+| Команда | Описание |
+|---------|----------|
+| `npm start` | Запустить локально (нажмите `i` для iOS, `a` для Android) |
+| `eas build --platform ios` | Собрать для iOS |
+| `eas build --platform android` | Собрать для Android |
+| `eas submit --platform ios` | Загрузить на App Store |
+| `eas submit --platform android` | Загрузить на Google Play |
+| `eas build --platform ios --auto-submit` | Собрать + загрузить iOS за один шаг |
+| `eas build --platform android --auto-submit` | Собрать + загрузить Android за один шаг |
+
+---
+
+## Полезные ссылки
+
+- **Expo Dashboard (статус билда):** https://expo.dev/projects
+- **EAS Build документация:** https://docs.expo.dev/build/introduction/
+- **App Store Connect:** https://appstoreconnect.apple.com/
+- **Google Play Console:** https://play.google.com/console/
+- **Apple Developer Program:** https://developer.apple.com/programs/
+- **Expo документация:** https://docs.expo.dev/
+- **App Store Review Guidelines:** https://developer.apple.com/app-store/review/guidelines/
+
+---
+
+Всё! Код уже готов. Скриншоты сделайте в симуляторе, заполните данные в магазинах, и через 24–48 часов ваше приложение будет доступно пользователям! 🎉
