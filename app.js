@@ -6,7 +6,7 @@
 const DEFAULT_TERMS = [
     { term: 'Photosynthesis', definition: 'Process by which plants convert sunlight into food' },
     { term: 'Mitosis', definition: 'Cell division producing two identical daughter cells' },
-    { term: 'Gravity', definition: 'Force that attracts objects toward the centre of the Earth' },
+    { term: 'Gravity', definition: 'Force that attracts objects toward the center of the Earth' },
     { term: 'Osmosis', definition: 'Movement of water through a semi-permeable membrane' },
     { term: 'DNA', definition: 'Molecule carrying genetic information in living organisms' },
     { term: 'Atom', definition: 'Smallest unit of an element that retains its properties' },
@@ -483,6 +483,7 @@ function submitFillBlank() {
     }
 
     input.classList.remove('fill-correct', 'fill-wrong');
+    // Re-add after a tick to retrigger CSS transitions/animations on the new state
     setTimeout(() => {
         if (given === correct) input.classList.add('fill-correct');
         else input.classList.add('fill-wrong');
@@ -628,11 +629,11 @@ function showResultScreen() {
     if (scoreEl) scoreEl.textContent = `${correct} / ${total} (${pct}%)`;
 
     let emj = '😔';
-    let msg = 'Keep practicing! You\'ll get better!';
+    let msg = "Keep practicing! You'll get better!";
     if (pct === 100) { emj = '🏆'; msg = 'Perfect score! Amazing!'; }
     else if (pct >= 80) { emj = '🎉'; msg = 'Great job! Almost perfect!'; }
     else if (pct >= 60) { emj = '👍'; msg = 'Good effort! Keep it up!'; }
-    else if (pct >= 40) { emj = '💪'; msg = 'You\'re improving! Try again!'; }
+    else if (pct >= 40) { emj = '💪'; msg = "You're improving! Try again!"; }
 
     if (emoji) emoji.textContent = emj;
     if (msgEl) msgEl.textContent = msg;

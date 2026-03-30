@@ -184,18 +184,6 @@ button:focus-visible {
     margin-top: 2px;
 }
 
-.btn-text-group {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 1;
-}
-
-.mode-btn .btn-label,
-.mode-btn .btn-desc {
-    pointer-events: none;
-}
-
 .terms-count-info {
     text-align: center;
     color: var(--text-dim);
