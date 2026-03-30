@@ -1,51 +1,48 @@
-// App State Management
-let appState = {
-    currentQuizMode: null,
-    score: 0,
-    currentQuestionIndex: 0,
+// Import necessary libraries
+import React from 'react';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { Quiz } from './Quiz';
+import { TermsCreation } from './TermsCreation';
+
+// Set the initial state
+const initialState = {
+    quizMode: null,
     terms: [],
-    userAnswers: [],
+    score: 0
 };
 
-// Quiz Modes
-const QuizModes = {
-    TRUE_FALSE: 'true-false',
-    MULTIPLE_CHOICE: 'multiple-choice',
-    FILL_BLANK: 'fill-blank',
-    DRAG_DROP: 'drag-drop',
-};
-
-// Default Demo Terms
-const defaultTerms = [
-    { term: 'JavaScript', definition: 'A programming language used for web development.' },
-    { term: 'HTML', definition: 'The standard markup language for creating web pages.' },
-    { term: 'CSS', definition: 'A stylesheet language used for describing the presentation of a document.' },
-];
-
-// Function to initialize terms from localStorage or use defaults
-function initializeTerms() {
-    const storedTerms = localStorage.getItem('terms');
-    appState.terms = storedTerms ? JSON.parse(storedTerms) : defaultTerms;
-}
-
-// Utility Functions
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+// Reducer to manage state
+const reducer = (state = initialState, action) => {
+    switch(action.type) {
+        case 'ADD_TERM':
+            return { ...state, terms: [...state.terms, action.term] };
+        case 'SET_MODE':
+            return { ...state, quizMode: action.mode };
+        case 'UPDATE_SCORE':
+            return { ...state, score: action.score };
+        default:
+            return state;
     }
+};
+
+// Create redux store
+const store = createStore(reducer);
+
+// App component
+function App() {
+    const [showTermsCreation, setShowTermsCreation] = React.useState(false);
+
+    return (
+        <Provider store={store}>
+            <div style={{ backgroundColor: '#0a0a0a', color: '#00ffcc', height: '100vh', padding: '20px' }}>
+                <h1 style={{ textAlign: 'center', color: '#00ffcc', fontFamily: 'Neon', fontSize: '2em' }}>JustLEarn</h1>
+                <button style={{ backgroundColor: '#00ffcc', color: '#0a0a0a', border: 'none', padding: '10px', cursor: 'pointer' }} onClick={() => setShowTermsCreation(!showTermsCreation)}>Create Terms</button>
+                {showTermsCreation && <TermsCreation />}
+                <Quiz />
+            </div>
+        </Provider>
+    );
 }
 
-function validateAnswer(question, answer) {
-    return question.correctAnswer === answer;
-}
-
-// Term Creation Logic
-function createTerm(term, definition) {
-    const newTerm = { term, definition };
-    appState.terms.push(newTerm);
-    localStorage.setItem('terms', JSON.stringify(appState.terms));
-}
-
-// Initialize the quiz
-initializeTerms();
+export default App;
