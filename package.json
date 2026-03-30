@@ -1,1 +1,20 @@
-{\n  "name": "JustLEarn",\n  "version": "1.0.0",\n  "scripts": {\n    "build:android": "npx cap build android",\n    "build:ios": "npx cap build ios"\n  },\n  "dependencies": {\n    "@capacitor/core": "^3.0.0",\n    "@capacitor/cli": "^3.0.0",\n    "@capacitor/android": "^3.0.0",\n    "@capacitor/ios": "^3.0.0"\n  }\n}
+{
+  "name": "justlearn",
+  "version": "1.0.0",
+  "description": "JustLEarn - An interactive language learning app",
+  "scripts": {
+    "cap:add:ios": "npx cap add ios",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android",
+    "build:ios": "npx cap build ios",
+    "build:android": "npx cap build android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^3.0.0",
+    "@capacitor/cli": "^3.0.0",
+    "@capacitor/core": "^3.0.0",
+    "@capacitor/ios": "^3.0.0"
+  }
+}
