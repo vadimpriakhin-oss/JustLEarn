@@ -1,45 +1,25 @@
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+.hidden {
+    display: none;
 }
 
-body {
-    background-color: darkgreen;
+.create-mode-selection {
+    /* Add your styles */
+}
+
+.mode-selection-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.mode-option {
+    background-color: green;
     color: white;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
-
-button, .button {
-    background-color: terracotta;
-    color: black;
     border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover, .button:hover {
-    background-color: cream;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-input[type='text'], input[type='email'], textarea {
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    cursor: pointer;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-}
-
-p {
-    margin: 0 0 10px;
+.mode-option:hover {
+    background-color: darkgreen;
 }
