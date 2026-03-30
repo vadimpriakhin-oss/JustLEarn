@@ -1,0 +1,73 @@
+/*
+ * android-build.gradle — Reference build.gradle for Android signing
+ * ==================================================================
+ * After running `npx cap add android`, open android/app/build.gradle
+ * in Android Studio and apply the signing configuration shown below.
+ *
+ * Steps:
+ *  1. Generate a keystore (once):
+ *       keytool -genkey -v -keystore justlearn.jks \
+ *               -alias justlearn -keyalg RSA -keysize 2048 \
+ *               -validity 10000
+ *  2. Store justlearn.jks outside the repository (e.g. ~/.keystores/).
+ *  3. Create android/keystore.properties (add to .gitignore):
+ *       storeFile=<absolute path to justlearn.jks>
+ *       storePassword=<your store password>
+ *       keyAlias=justlearn
+ *       keyPassword=<your key password>
+ *  4. Apply the signingConfigs block below to android/app/build.gradle.
+ */
+
+// ─── Add at the top of android/app/build.gradle ──────────────────────────────
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+// ─── Inside the android { … } block ──────────────────────────────────────────
+
+android {
+    compileSdkVersion 34
+    defaultConfig {
+        applicationId "com.justlearn.app"
+        minSdkVersion 22
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile     file(keystoreProperties['storeFile'] ?: 'justlearn.jks')
+            storePassword keystoreProperties['storePassword'] ?: System.getenv("KEYSTORE_PASSWORD")
+            keyAlias      keystoreProperties['keyAlias']      ?: 'justlearn'
+            keyPassword   keystoreProperties['keyPassword']   ?: System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig    signingConfigs.release
+            minifyEnabled    false
+            proguardFiles    getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix   "-debug"
+        }
+    }
+}
+
+// ─── To build a signed AAB (recommended for Google Play) ─────────────────────
+// Run from the android/ directory:
+//   ./gradlew bundleRelease
+//
+// Output: android/app/build/outputs/bundle/release/app-release.aab
+//
+// ─── To build a signed APK ───────────────────────────────────────────────────
+// Run from the android/ directory:
+//   ./gradlew assembleRelease
+//
+// Output: android/app/build/outputs/apk/release/app-release.apk

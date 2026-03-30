@@ -1,1 +1,16 @@
-{\n  "appId": "com.justlearn.app",\n  "appName": "JustLEarn",\n  "webDir": ".",\n  "androidScheme": "https",\n  "iOS": {\n    "contentInset": "always"\n  },\n  "android": {\n    "backgroundColor": "#1a1a2e"\n  },\n  "plugins": {\n    "SplashScreen": {\n      "launchShowDuration": 3000,\n      "backgroundColor": "#1a1a2e",\n      "showSpinner": true,\n      "spinnerColor": "#00d4ff"\n    }\n  }\n}
+{
+  "appId": "com.justlearn.app",
+  "appName": "JustLEarn",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}

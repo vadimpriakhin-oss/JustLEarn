@@ -8,8 +8,24 @@ dist/
 .env
 .idea/
 .vscode/
-ios/
-android/
 .capacitor/
 coverage/
 .nyc_output/
+
+# iOS Capacitor build artifacts
+/ios/Pods/
+/ios/Capacitor/Capacitor.xcworkspace/
+
+# Android Capacitor build artifacts
+/android/.gradle/
+/android/build/
+/android/local.properties
+
+# Signing credentials (never commit these)
+*.jks
+*.keystore
+*.p8
+*.mobileprovision
+*.ipa
+*.apk
+*.aab
