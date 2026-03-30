@@ -1,1 +1,23 @@
-{\n  "name": "JustLEarn",\n  "version": "1.0.0",\n  "scripts": {\n    "build:android": "npx cap build android",\n    "build:ios": "npx cap build ios"\n  },\n  "dependencies": {\n    "@capacitor/core": "^3.0.0",\n    "@capacitor/cli": "^3.0.0",\n    "@capacitor/android": "^3.0.0",\n    "@capacitor/ios": "^3.0.0"\n  }\n}
+{
+  "name": "justlearn",
+  "version": "1.0.0",
+  "description": "Learn English for exam preparation",
+  "scripts": {
+    "dev": "http-server -p 8000",
+    "build": "npm run build:web",
+    "build:web": "echo 'Web build complete'",
+    "build:ios": "npm run build:web && npx cap copy ios && npx cap build ios",
+    "build:android": "npm run build:web && npx cap copy android && npx cap build android",
+    "deploy:ios": "npm run build:ios && npx cap open ios",
+    "deploy:android": "npm run build:android && npx cap open android",
+    "sync": "npx cap sync",
+    "cap:add:ios": "npx cap add ios",
+    "cap:add:android": "npx cap add android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/cli": "^5.0.0",
+    "@capacitor/ios": "^5.0.0",
+    "@capacitor/android": "^5.0.0"
+  }
+}

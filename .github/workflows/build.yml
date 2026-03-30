@@ -1,0 +1,138 @@
+name: Build & Validate
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate-web:
+    name: Validate Web Configuration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build web
+        run: npm run build:web
+
+      - name: Validate capacitor.config.json
+        run: |
+          node -e "
+            const config = require('./capacitor.config.json');
+            if (!config.appId) throw new Error('Missing appId');
+            if (!config.appName) throw new Error('Missing appName');
+            if (!config.webDir) throw new Error('Missing webDir');
+            console.log('✅ capacitor.config.json is valid');
+            console.log('   App ID:', config.appId);
+            console.log('   App Name:', config.appName);
+          "
+
+      - name: Validate manifest.json
+        run: |
+          node -e "
+            const manifest = require('./manifest.json');
+            if (!manifest.name) throw new Error('Missing name');
+            if (!manifest.icons || manifest.icons.length === 0) throw new Error('Missing icons');
+            console.log('✅ manifest.json is valid');
+            console.log('   App Name:', manifest.name);
+            console.log('   Icons count:', manifest.icons.length);
+          "
+
+      - name: Validate package.json scripts
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            const required = ['build:ios', 'build:android', 'deploy:ios', 'deploy:android', 'sync'];
+            const missing = required.filter(s => !pkg.scripts[s]);
+            if (missing.length > 0) throw new Error('Missing scripts: ' + missing.join(', '));
+            console.log('✅ All required npm scripts present');
+          "
+
+      - name: Check asset files exist
+        run: |
+          declare -a icons=(
+            "assets/icons/icon-512x512.svg"
+            "assets/icons/icon-1024x1024.svg"
+            "assets/icons/icon-192x192.svg"
+            "assets/icons/icon-144x144.svg"
+            "assets/icons/icon-96x96.svg"
+            "assets/icons/icon-72x72.svg"
+            "assets/icons/icon-48x48.svg"
+            "assets/splash/splash-ios.svg"
+            "assets/splash/splash-android.svg"
+          )
+          for icon in "${icons[@]}"; do
+            if [ ! -f "$icon" ]; then
+              echo "❌ Missing: $icon"
+              exit 1
+            else
+              echo "✅ Found: $icon"
+            fi
+          done
+
+      - name: Check documentation exists
+        run: |
+          declare -a docs=(
+            "APP_STORE_GUIDE.md"
+            "GOOGLE_PLAY_GUIDE.md"
+            "BUILD_GUIDE.md"
+            "VERSION_MANAGEMENT.md"
+            "DEPLOYMENT_CHECKLIST.md"
+          )
+          for doc in "${docs[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ Missing: $doc"
+              exit 1
+            else
+              echo "✅ Found: $doc"
+            fi
+          done
+
+      - name: Check iOS configuration
+        run: |
+          if [ ! -f "ios/App/App/Info.plist" ]; then
+            echo "❌ Missing ios/App/App/Info.plist"
+            exit 1
+          fi
+          echo "✅ iOS Info.plist found"
+
+      - name: Check Android configuration
+        run: |
+          if [ ! -f "android/app/build.gradle" ]; then
+            echo "❌ Missing android/app/build.gradle"
+            exit 1
+          fi
+          echo "✅ Android build.gradle found"
+
+      - name: Validate version consistency
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            console.log('✅ Version from package.json:', pkg.version);
+          "
+
+      - name: Upload configuration artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-config-${{ github.sha }}
+          path: |
+            capacitor.config.json
+            manifest.json
+            package.json
+            ios/App/App/Info.plist
+            android/app/build.gradle
+          retention-days: 30

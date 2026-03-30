@@ -1,88 +1,175 @@
 # BUILD_GUIDE.md
 
-## Comprehensive Build Instructions for App Store and Google Play Deployment
+## Local Setup and Build Guide for JustLEarn
 
-This guide provides detailed steps for setting up, building, and deploying your application on both Android and iOS platforms.
-
----
-
-## Setup
-1. **Prerequisites:**  
-   - Install [Node.js](https://nodejs.org/) (version X.X.X).
-   - Install [Android Studio](https://developer.android.com/studio) for Android development.
-   - Install [Xcode](https://developer.apple.com/xcode/) for iOS development.
-   - Install [Git](https://git-scm.com/) for version control.
-
-2. **Clone the Repository:**  
-   ```bash
-   git clone https://github.com/vadimpriakhin-oss/JustLEarn.git
-   cd JustLEarn
-   ```
-
-3. **Install Dependencies:**  
-   ```bash
-   npm install
-   ```
+This guide covers local installation, building web and mobile versions, using Capacitor, and running on emulators.
 
 ---
 
-## Android Build Steps
-1. **Open Android Studio:**  
-   - Import the project as an existing project.
+## Prerequisites
 
-2. **Configure Build Variants:**  
-   - Go to the *Build Variants* tab and select the desired variant (release/debug).
-
-3. **Build the APK:**  
-   - Click on *Build* in the top menu, then select *Build Bundle(s)/APK(s)* -> *Build APK(s)*.
-   - Follow the prompts to complete the build.
-
-4. **Locate the APK:**  
-   - Find the built APK in `app/build/outputs/apk/` directory.
-
-5. **Deploy to Google Play:**  
-   - Sign up for a Google Play Developer account.
-   - Follow the [Google Play Console](https://play.google.com/console/) instructions to upload your APK.
+- **Node.js 18+** — [nodejs.org](https://nodejs.org/)
+- **npm 9+** — bundled with Node.js
+- **Git** — [git-scm.com](https://git-scm.com/)
+- For iOS: **Mac** with Xcode 15+ and CocoaPods
+- For Android: **Android Studio** with Android SDK API 34+
 
 ---
 
-## iOS Build Steps
-1. **Open Xcode:**  
-   - Open the project workspace file (`.xcworkspace`).
+## 1. Local Installation
 
-2. **Select Device:**  
-   - Choose a target device or simulator from the toolbar.
+```bash
+# Clone the repository
+git clone https://github.com/vadimpriakhin-oss/JustLEarn.git
+cd JustLEarn
 
-3. **Build the App:**  
-   - Click on *Product* in the top menu, then select *Archive*.
-   - Wait for the build process to finish.
+# Install dependencies (Capacitor + http-server)
+npm install
 
-4. **Locate the Build:**  
-   - Open the Organizer window in Xcode to find your archived builds.
-
-5. **Deploy to App Store:**  
-   - Use Xcode or [App Store Connect](https://appstoreconnect.apple.com/) to upload your app.
-   - Follow the steps for submitting the app for review.
+# Run the web app locally
+npm run dev
+# Open http://localhost:8000
+```
 
 ---
 
-## Required Materials
-- **For Android:**  
-   - Google Play Developer Account.
-   - Keystore file for signing APKs.
+## 2. Using Capacitor
 
-- **For iOS:**  
-   - Apple Developer Account.
-   - App Icons and Splash Screens.
-   - App Privacy Policy.
+[Capacitor](https://capacitorjs.com/) wraps the web app into a native iOS/Android container.
+
+### First-time Platform Setup
+
+```bash
+# Add iOS platform (requires Mac + Xcode)
+npm run cap:add:ios
+
+# Add Android platform (requires Android Studio)
+npm run cap:add:android
+```
+
+### Synchronise Web Assets to Native Projects
+
+After making changes to web files, sync them to the native projects:
+
+```bash
+npm run sync
+# This runs: npx cap sync
+```
 
 ---
 
-## Helpful Links
-- [React Native Documentation](https://reactnative.dev/docs/getting-started)
-- [Building and Running Apps on Android](https://developer.android.com/studio/run)
-- [Building and Publishing Your App](https://developer.apple.com/documentation/xcode/distributing-your-app)
+## 3. Building for Mobile
+
+### iOS
+
+```bash
+# Build web assets + copy to iOS + open Xcode
+npm run deploy:ios
+
+# Or step by step:
+npm run build:web          # "Web build complete"
+npx cap copy ios           # Copy web assets to iOS project
+npx cap build ios          # Build iOS (requires Xcode)
+npx cap open ios           # Open in Xcode
+```
+
+### Android
+
+```bash
+# Build web assets + copy to Android + open Android Studio
+npm run deploy:android
+
+# Or step by step:
+npm run build:web          # "Web build complete"
+npx cap copy android       # Copy web assets to Android project
+npx cap build android      # Build Android (requires Android Studio)
+npx cap open android       # Open in Android Studio
+```
 
 ---
 
-For any questions or issues, please refer to our GitHub discussions or reach out to the team.
+## 4. Running on Emulators
+
+### iOS Simulator (Mac only)
+
+1. Open Xcode: `npx cap open ios`
+2. Select a simulator from the device menu (e.g. iPhone 15 Pro)
+3. Press **▶ Run** (⌘R)
+
+Or via CLI:
+```bash
+npx cap run ios
+```
+
+### Android Emulator
+
+1. In Android Studio: **Tools** → **Device Manager** → **Create Device**
+2. Choose a device profile (e.g. Pixel 8)
+3. Download a system image (API 34 recommended)
+4. Start the emulator
+
+Then run:
+```bash
+npx cap run android
+```
+
+Or open Android Studio: `npx cap open android` → click **▶ Run**
+
+---
+
+## 5. Project Structure
+
+```
+JustLEarn/
+├── index.html              # Main HTML entry point
+├── app.js                  # Application logic
+├── data.js                 # Vocabulary data
+├── styles.css              # Styles
+├── service-worker.js       # PWA service worker
+├── manifest.json           # PWA manifest
+├── capacitor.config.json   # Capacitor configuration
+├── package.json            # npm scripts and dependencies
+├── assets/
+│   ├── icons/              # App icons (SVG source files)
+│   └── splash/             # Splash screens (SVG source files)
+├── ios/
+│   └── App/
+│       └── App/
+│           └── Info.plist  # iOS app configuration
+├── android/
+│   └── app/
+│       └── build.gradle    # Android build configuration
+├── scripts/
+│   ├── setup-ios.sh        # iOS environment setup script
+│   └── setup-android.sh    # Android environment setup script
+└── .github/
+    └── workflows/
+        └── build.yml       # CI/CD workflow
+```
+
+---
+
+## 6. Available npm Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start local web server on port 8000 |
+| `npm run build` | Alias for `build:web` |
+| `npm run build:web` | Web build (placeholder) |
+| `npm run build:ios` | Build web + copy to iOS |
+| `npm run build:android` | Build web + copy to Android |
+| `npm run deploy:ios` | Build + open in Xcode |
+| `npm run deploy:android` | Build + open in Android Studio |
+| `npm run sync` | Sync all platforms |
+| `npm run cap:add:ios` | Add iOS platform |
+| `npm run cap:add:android` | Add Android platform |
+
+---
+
+## 7. Helpful Links
+
+- [Capacitor Documentation](https://capacitorjs.com/docs)
+- [iOS Build Guide](./APP_STORE_GUIDE.md)
+- [Android Build Guide](./GOOGLE_PLAY_GUIDE.md)
+- [Deployment Checklist](./DEPLOYMENT_CHECKLIST.md)
+- [Version Management](./VERSION_MANAGEMENT.md)

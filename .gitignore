@@ -8,8 +8,24 @@ dist/
 .env
 .idea/
 .vscode/
-ios/
-android/
 .capacitor/
 coverage/
 .nyc_output/
+
+# iOS build artifacts (keep configuration files)
+ios/App/Pods/
+ios/App/App/build/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcuserdata/
+ios/.DS_Store
+
+# Android build artifacts (keep configuration files)
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/.DS_Store
+
+# Keystore files (never commit these)
+*.keystore
+*.jks

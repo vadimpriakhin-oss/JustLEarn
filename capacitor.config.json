@@ -1,1 +1,43 @@
-{\n  "appId": "com.justlearn.app",\n  "appName": "JustLEarn",\n  "webDir": ".",\n  "androidScheme": "https",\n  "iOS": {\n    "contentInset": "always"\n  },\n  "android": {\n    "backgroundColor": "#1a1a2e"\n  },\n  "plugins": {\n    "SplashScreen": {\n      "launchShowDuration": 3000,\n      "backgroundColor": "#1a1a2e",\n      "showSpinner": true,\n      "spinnerColor": "#00d4ff"\n    }\n  }\n}
+{
+  "appId": "com.justlearn.app",
+  "appName": "JustLEarn",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "androidScheme": "https",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#1a1a2e",
+    "allowsLinkPreview": false
+  },
+  "android": {
+    "backgroundColor": "#1a1a2e",
+    "allowMixedContent": false,
+    "captureInput": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "backgroundColor": "#1a1a2e",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "iosSpinnerStyle": "large",
+      "spinnerColor": "#16c784"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#1a1a2e"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "DARK",
+      "resizeOnFullScreen": true
+    }
+  },
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "ionic",
+    "hostname": "app"
+  }
+}
