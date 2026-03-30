@@ -1,25 +1,51 @@
-.hidden {
-    display: none;
+.container {
+  margin: 0 auto;
+  padding: 0 20px;
+  max-width: 1200px;
 }
 
-.create-mode-selection {
-    /* Add your styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1d1d1d, #2e2e2e);
+  color: #f0f0f0;
+  line-height: 1.5;
 }
 
-.mode-selection-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+h1, h2, h3 {
+  text-align: center;
+  color: #00ffcc;
+  text-shadow: 0 0 10px #00ffcc;
 }
 
-.mode-option {
-    background-color: green;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
+button {
+  background: linear-gradient(45deg, #ff007f, #ff7f00);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.mode-option:hover {
-    background-color: darkgreen;
+button:hover {
+  background: rgba(255, 0, 127, 0.75);
+  box-shadow: 0 0 20px #ff007f;
+}
+
+.home-page, .create-mode, .add-term, .quiz-page {
+  padding: 20px;
+  background-color: rgba(45, 45, 45, 0.8);
+  border-radius: 10px;
+  margin: 10px 0;
+  box-shadow: 0 0 15px #00ffcc;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+  button {
+    width: 100%;
+    padding: 15px;
+  }
 }
