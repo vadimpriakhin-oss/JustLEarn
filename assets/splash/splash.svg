@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2732 2732" width="2732" height="2732">
+  <rect width="2732" height="2732" fill="#1a1a2e"/>
+  <circle cx="1366" cy="1200" r="500" fill="#16213e"/>
+  <text x="1366" y="1370" font-family="Arial, sans-serif" font-size="420" font-weight="bold"
+        text-anchor="middle" fill="#00d4ff">J</text>
+  <text x="1366" y="1800" font-family="Arial, sans-serif" font-size="180" font-weight="bold"
+        text-anchor="middle" fill="#ffffff">JustLEarn</text>
+  <text x="1366" y="2000" font-family="Arial, sans-serif" font-size="110"
+        text-anchor="middle" fill="#a0a0c0">Learn English for Exam Preparation</text>
+</svg>
