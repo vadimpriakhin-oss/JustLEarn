@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ios-info.plist — Reference configuration for iOS Info.plist
+  ============================================================
+  After running `npx cap add ios`, open the generated project in Xcode
+  at ios/App/App/Info.plist and ensure the following keys are present.
+
+  To edit in Xcode: select the Info.plist file in the Project Navigator,
+  then add / modify keys using the built-in property list editor.
+-->
+<plist version="1.0">
+<dict>
+
+  <!-- App identity -->
+  <key>CFBundleIdentifier</key>
+  <string>com.justlearn.app</string>
+
+  <key>CFBundleDisplayName</key>
+  <string>JustLEarn</string>
+
+  <key>CFBundleName</key>
+  <string>JustLEarn</string>
+
+  <key>CFBundleVersion</key>
+  <string>1</string>
+
+  <key>CFBundleShortVersionString</key>
+  <string>1.0.0</string>
+
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+
+  <!-- Minimum iOS version -->
+  <key>MinimumOSVersion</key>
+  <string>14.0</string>
+
+  <!-- Supported interface orientations (portrait only) -->
+  <key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+  </array>
+
+  <!-- Required device capabilities -->
+  <key>UIRequiredDeviceCapabilities</key>
+  <array>
+    <string>armv7</string>
+  </array>
+
+  <!-- Privacy permission descriptions (add only the ones you use) -->
+  <key>NSCameraUsageDescription</key>
+  <string>This app uses the camera for profile photos.</string>
+
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>This app accesses your photos to set a profile picture.</string>
+
+  <!-- App Transport Security — allow HTTPS only -->
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <false/>
+  </dict>
+
+  <!-- Capacitor / WKWebView settings -->
+  <key>WKAppBoundDomains</key>
+  <array>
+    <string>localhost</string>
+  </array>
+
+</dict>
+</plist>

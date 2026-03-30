@@ -1,88 +1,114 @@
-# BUILD_GUIDE.md
+# Build Guide
 
-## Comprehensive Build Instructions for App Store and Google Play Deployment
-
-This guide provides detailed steps for setting up, building, and deploying your application on both Android and iOS platforms.
+Complete instructions for building **JustLEarn** locally and preparing it for the App Store and Google Play using [Capacitor](https://capacitorjs.com).
 
 ---
 
-## Setup
-1. **Prerequisites:**  
-   - Install [Node.js](https://nodejs.org/) (version X.X.X).
-   - Install [Android Studio](https://developer.android.com/studio) for Android development.
-   - Install [Xcode](https://developer.apple.com/xcode/) for iOS development.
-   - Install [Git](https://git-scm.com/) for version control.
+## Prerequisites
 
-2. **Clone the Repository:**  
-   ```bash
-   git clone https://github.com/vadimpriakhin-oss/JustLEarn.git
-   cd JustLEarn
-   ```
-
-3. **Install Dependencies:**  
-   ```bash
-   npm install
-   ```
+| Tool | Purpose | Install |
+|---|---|---|
+| Node.js ≥ 18 | JavaScript runtime | [nodejs.org](https://nodejs.org) |
+| Git | Version control | [git-scm.com](https://git-scm.com) |
+| Android Studio | Android builds | [developer.android.com/studio](https://developer.android.com/studio) |
+| Xcode (macOS only) | iOS builds | Mac App Store |
+| CocoaPods (macOS only) | iOS dependency manager | `sudo gem install cocoapods` |
 
 ---
 
-## Android Build Steps
-1. **Open Android Studio:**  
-   - Import the project as an existing project.
+## Installation
 
-2. **Configure Build Variants:**  
-   - Go to the *Build Variants* tab and select the desired variant (release/debug).
-
-3. **Build the APK:**  
-   - Click on *Build* in the top menu, then select *Build Bundle(s)/APK(s)* -> *Build APK(s)*.
-   - Follow the prompts to complete the build.
-
-4. **Locate the APK:**  
-   - Find the built APK in `app/build/outputs/apk/` directory.
-
-5. **Deploy to Google Play:**  
-   - Sign up for a Google Play Developer account.
-   - Follow the [Google Play Console](https://play.google.com/console/) instructions to upload your APK.
+```bash
+git clone https://github.com/vadimpriakhin-oss/JustLEarn.git
+cd JustLEarn
+npm install
+```
 
 ---
 
-## iOS Build Steps
-1. **Open Xcode:**  
-   - Open the project workspace file (`.xcworkspace`).
+## Adding Platforms (First Time Only)
 
-2. **Select Device:**  
-   - Choose a target device or simulator from the toolbar.
+```bash
+npx cap add ios      # Creates the ios/ folder
+npx cap add android  # Creates the android/ folder
+```
 
-3. **Build the App:**  
-   - Click on *Product* in the top menu, then select *Archive*.
-   - Wait for the build process to finish.
+---
 
-4. **Locate the Build:**  
-   - Open the Organizer window in Xcode to find your archived builds.
+## Syncing Web Assets to Native Projects
 
-5. **Deploy to App Store:**  
-   - Use Xcode or [App Store Connect](https://appstoreconnect.apple.com/) to upload your app.
-   - Follow the steps for submitting the app for review.
+Run this every time you change the web app:
+
+```bash
+npm run sync            # Sync to both platforms
+npm run sync:ios        # iOS only
+npm run sync:android    # Android only
+```
+
+---
+
+## Building for iOS
+
+```bash
+npm run build:ios      # Build + sync + compile iOS project
+npm run deploy:ios     # Build + sync + compile + open in Xcode
+```
+
+After opening Xcode:
+1. Select **Any iOS Device (arm64)** as the destination.
+2. Click **Product → Archive** to create a distributable build.
+
+See [APP_STORE_GUIDE.md](./APP_STORE_GUIDE.md) for full deployment instructions.
+
+---
+
+## Building for Android
+
+```bash
+npm run build:android      # Build + sync + compile Android project
+npm run deploy:android     # Build + sync + compile + open in Android Studio
+```
+
+To generate a signed AAB manually:
+
+```bash
+cd android
+./gradlew bundleRelease
+```
+
+See [GOOGLE_PLAY_GUIDE.md](./GOOGLE_PLAY_GUIDE.md) for full deployment instructions.
+
+---
+
+## Running on Emulators / Physical Devices
+
+### iOS Simulator (macOS)
+
+```bash
+npx cap run ios
+```
+
+### Android Emulator
+
+```bash
+npx cap run android
+```
+
+Make sure an emulator is running (or a device is connected via USB with USB debugging enabled) before running the command.
 
 ---
 
 ## Required Materials
-- **For Android:**  
-   - Google Play Developer Account.
-   - Keystore file for signing APKs.
 
-- **For iOS:**  
-   - Apple Developer Account.
-   - App Icons and Splash Screens.
-   - App Privacy Policy.
+- **For Android:** Google Play Developer Account · Keystore file (see [GOOGLE_PLAY_GUIDE.md](./GOOGLE_PLAY_GUIDE.md))
+- **For iOS:** Apple Developer Account · App icons · Privacy Policy (see [APP_STORE_GUIDE.md](./APP_STORE_GUIDE.md))
 
 ---
 
 ## Helpful Links
-- [React Native Documentation](https://reactnative.dev/docs/getting-started)
-- [Building and Running Apps on Android](https://developer.android.com/studio/run)
-- [Building and Publishing Your App](https://developer.apple.com/documentation/xcode/distributing-your-app)
 
----
-
-For any questions or issues, please refer to our GitHub discussions or reach out to the team.
+- [Capacitor Documentation](https://capacitorjs.com/docs)
+- [Android Developer Docs](https://developer.android.com/studio/run)
+- [Apple Developer Docs](https://developer.apple.com/documentation/xcode/distributing-your-app)
+- [Quick Start](./QUICK_START.md)
+- [Deployment Checklist](./DEPLOYMENT_CHECKLIST.md)
