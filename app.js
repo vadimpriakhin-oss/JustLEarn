@@ -4,7 +4,9 @@ let appState = {
     currentQuizIndex: 0,
     score: { correct: 0, total: 0 },
     currentQuizMode: null,
-    shuffledTerms: []
+    shuffledTerms: [],
+    currentTrueFalseAnswer: null,
+    currentOptions: []
 };
 
 const DEFAULT_TERMS = [
@@ -28,6 +30,12 @@ function loadTerms() {
 
 function saveTerms() {
     localStorage.setItem('justlearnTerms', JSON.stringify(appState.userTerms));
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
 }
 
 function showHomeScreen() {
@@ -70,13 +78,31 @@ function renderTermFields() {
     const container = document.getElementById('termsContainer');
     container.innerHTML = '';
     appState.userTerms.forEach((item, index) => {
-        container.innerHTML += `
-            <div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                <input type="text" placeholder="Term" value="${item.term}" onchange="appState.userTerms[${index}].term = this.value" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px; box-sizing: border-box;">
-                <textarea placeholder="Definition" onchange="appState.userTerms[${index}].definition = this.value" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; min-height: 60px; font-size: 14px; box-sizing: border-box;">${item.definition}</textarea>
-                <button onclick="removeTermField(${index})" style="width: 100%; background: #ff3333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold;">🗑️ Delete</button>
-            </div>
-        `;
+        const div = document.createElement('div');
+        div.style.cssText = 'background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 15px; margin-bottom: 15px;';
+
+        const termInput = document.createElement('input');
+        termInput.type = 'text';
+        termInput.placeholder = 'Term';
+        termInput.value = item.term;
+        termInput.style.cssText = 'width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px; box-sizing: border-box;';
+        termInput.addEventListener('change', function() { appState.userTerms[index].term = this.value; });
+
+        const defTextarea = document.createElement('textarea');
+        defTextarea.placeholder = 'Definition';
+        defTextarea.style.cssText = 'width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; min-height: 60px; font-size: 14px; box-sizing: border-box;';
+        defTextarea.value = item.definition;
+        defTextarea.addEventListener('change', function() { appState.userTerms[index].definition = this.value; });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '🗑️ Delete';
+        deleteBtn.style.cssText = 'width: 100%; background: #ff3333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold;';
+        deleteBtn.addEventListener('click', function() { removeTermField(index); });
+
+        div.appendChild(termInput);
+        div.appendChild(defTextarea);
+        div.appendChild(deleteBtn);
+        container.appendChild(div);
     });
 }
 
@@ -98,7 +124,7 @@ function renderTermsList() {
     }
     let html = `<h3 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">📋 Terms: ${appState.userTerms.length}</h3><ul style="list-style: none; padding: 0;">`;
     appState.userTerms.forEach((item, i) => {
-        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${item.term}</strong><br/><span style="color: #aaa; font-size: 12px;">${item.definition}</span></li>`;
+        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${escapeHtml(item.term)}</strong><br/><span style="color: #aaa; font-size: 12px;">${escapeHtml(item.definition)}</span></li>`;
     });
     list.innerHTML = html + '</ul>';
 }
@@ -148,21 +174,32 @@ function showQuizScreen() {
         </div>
         <p style="color: #888; text-align: center;">Question ${progress}/${total}</p>
         <div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <h3 style="margin: 0; color: #00ffcc;">${term.term}</h3>
+            <h3 style="margin: 0; color: #00ffcc;">${escapeHtml(term.term)}</h3>
         </div>`;
     
     if (appState.currentQuizMode === 'true-false') {
-        content += `<div style="display: flex; gap: 10px;">
-            <button onclick="checkAnswer('true')" style="flex: 1; background: #00aa00; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">True</button>
-            <button onclick="checkAnswer('false')" style="flex: 1; background: #aa0000; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">False</button>
+        const wrongOptions = getRandomWrong(term.definition, 1);
+        let displayDef;
+        if (wrongOptions.length > 0 && Math.random() < 0.5) {
+            displayDef = wrongOptions[0];
+            appState.currentTrueFalseAnswer = 'false';
+        } else {
+            // When no wrong options are available (single term), always show the real definition
+            displayDef = term.definition;
+            appState.currentTrueFalseAnswer = 'true';
+        }
+        content += `<div style="background: #0f0f1e; border: 1px solid #555; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #fff; font-size: 15px;">${escapeHtml(displayDef)}</div>
+        <p style="color: #888; text-align: center; margin-bottom: 10px;">Is this the correct definition?</p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="checkAnswer('true')" style="flex: 1; background: #00aa00; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✓ True</button>
+            <button onclick="checkAnswer('false')" style="flex: 1; background: #aa0000; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✗ False</button>
         </div>`;
     } else if (appState.currentQuizMode === 'multiple-choice') {
         const wrong = getRandomWrong(term.definition, 3);
-        const options = shuffle([term.definition, ...wrong]);
+        appState.currentOptions = shuffle([term.definition, ...wrong]);
         content += '<div style="display: flex; flex-direction: column; gap: 10px;">';
-        options.forEach((opt, i) => {
-            const safeOpt = opt.replace(/'/g, "\\'").replace(/"/g, '\\"');
-            content += `<button onclick="checkAnswer(\\"${safeOpt}\\")" style="background: #1a1a2e; color: #00ffcc; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: bold;">${String.fromCharCode(65+i)}: ${opt}</button>`;
+        appState.currentOptions.forEach((opt, i) => {
+            content += `<button onclick="checkAnswer(${i})" style="background: #1a1a2e; color: #00ffcc; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: bold;">${String.fromCharCode(65+i)}: ${escapeHtml(opt)}</button>`;
         });
         content += '</div>';
     } else if (appState.currentQuizMode === 'fill-blank') {
@@ -181,7 +218,9 @@ function checkAnswer(userAnswer) {
     let isCorrect = false;
     
     if (appState.currentQuizMode === 'true-false') {
-        isCorrect = (userAnswer === 'true') === (correct.toLowerCase().includes('true'));
+        isCorrect = userAnswer === appState.currentTrueFalseAnswer;
+    } else if (appState.currentQuizMode === 'multiple-choice') {
+        isCorrect = appState.currentOptions[userAnswer] === correct;
     } else {
         isCorrect = userAnswer === correct;
     }
