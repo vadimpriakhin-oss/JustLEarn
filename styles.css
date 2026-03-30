@@ -17,6 +17,24 @@ p {
   text-shadow: 0 0 10px #ffffff;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scrollable Containers ───────────────────────────────────────────────── */
+.home-container,
+.create-container,
+.quiz-container,
+.results-container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ── Common Buttons ──────────────────────────────────────────────────────── */
 button {
   background-color: #00ccff;
   border: none;
