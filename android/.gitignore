@@ -1,0 +1,17 @@
+# Android Build Artifacts
+/app/build/
+/build/
+/.gradle/
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+.DS_Store
+*.keystore
+*.jks

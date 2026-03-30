@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1242 2208" width="1242" height="2208">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16c784;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1242" height="2208" fill="url(#bg)"/>
+  <!-- Center logo -->
+  <circle cx="621" cy="1000" r="280" fill="url(#accent)" opacity="0.15"/>
+  <circle cx="621" cy="1000" r="240" fill="url(#accent)" opacity="0.2"/>
+  <!-- Book icon -->
+  <rect x="421" y="820" width="180" height="360" rx="16" fill="url(#accent)" opacity="0.9"/>
+  <rect x="621" y="820" width="180" height="360" rx="16" fill="url(#accent)" opacity="0.7"/>
+  <rect x="601" y="820" width="20" height="360" fill="url(#bg)"/>
+  <text x="711" y="1040" font-family="Arial, sans-serif" font-size="160" font-weight="bold" fill="#1a1a2e" opacity="0.9" text-anchor="middle">J</text>
+  <!-- App name -->
+  <text x="621" y="1340" font-family="Arial, sans-serif" font-size="88" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0.95">JustLEarn</text>
+  <text x="621" y="1420" font-family="Arial, sans-serif" font-size="44" fill="#16c784" text-anchor="middle" opacity="0.8">Learn English for Exams</text>
+</svg>
