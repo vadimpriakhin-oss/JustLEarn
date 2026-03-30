@@ -1,96 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JustLEarn</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <div class="neon-logo">
-            <h1 class="neon-text">JustLEarn</h1>
-        </div>
-        
-        <div class="home-page" id="homePage">
-            <p class="subtitle">Learn Your Way</p>
-            
-            <div class="learning-modes">
-                <button class="mode-btn" data-mode="truefalse">
-                    <div class="mode-icon">✓✗</div>
-                    <div class="mode-title">True or False</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="multichoice">
-                    <div class="mode-icon">◯</div>
-                    <div class="mode-title">Multiple Choice</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="fillblank">
-                    <div class="mode-icon">_</div>
-                    <div class="mode-title">Fill in the Blank</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="draganddrop">
-                    <div class="mode-icon">⇄</div>
-                    <div class="mode-title">Drag & Drop</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="addterm">
-                    <div class="mode-icon">➕</div>
-                    <div class="mode-title">Add Custom Term</div>
-                </button>
-            </div>
-        </div>
-        
-        <div class="add-term-page hidden" id="addTermPage">
-            <div class="neon-logo">
-                <h1 class="neon-text">JustLEarn</h1>
-            </div>
-            
-            <h2>Add Custom Term</h2>
-            
-            <div class="form-group">
-                <label for="termInput">Term:</label>
-                <input type="text" id="termInput" class="form-input" placeholder="Enter the term...">
-            </div>
-            
-            <div class="form-group">
-                <label for="answerInput">Answer:</label>
-                <input type="text" id="answerInput" class="form-input" placeholder="Enter the answer...">
-            </div>
-            
-            <div class="button-group">
-                <button id="addBtn" class="btn-primary">Add Term</button>
-                <button id="backBtn" class="btn-secondary">Back to Home</button>
-            </div>
-            
-            <div id="customTermsList" class="terms-list">
-                <h3>Your Custom Terms:</h3>
-                <ul id="termsList"></ul>
-            </div>
-        </div>
-        
-        <div class="quiz-page hidden" id="quizPage">
-            <div class="quiz-header">
-                <div class="score-counter">
-                    <span class="score-label">Score:</span>
-                    <span id="score" class="score-value">0</span>
-                </div>
-                <h2 id="modeTitle" class="mode-header"></h2>
-                <div class="progress-bar">
-                    <div id="progress" class="progress-fill"></div>
-                </div>
-            </div>
-            
-            <div id="quizContent"></div>
-            
-            <button id="nextBtn" class="btn-primary hidden">Next</button>
-            <button id="homeBtn" class="btn-secondary">Back to Home</button>
-        </div>
+<section>
+    <h2>Create Mode Selection</h2>
+    <div>
+        <label>
+            <input type="radio" name="mode" value="single_term">
+            Single Term
+        </label>
+        <label>
+            <input type="radio" name="mode" value="batch_mode">
+            Batch Mode
+        </label>
+        <label>
+            <input type="radio" name="mode" value="import_file">
+            Import from File
+        </label>
     </div>
-    
-    <script src="data.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
+</section>
