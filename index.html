@@ -3,128 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch(function(error) {
+                    console.error('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
     <title>JustLEarn</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Home Page -->
-        <div class="home-page" id="homePage">
-            <div class="neon-logo">
-                <h1>JustLEarn</h1>
-            </div>
-            <p class="subtitle">Learn Your Way</p>
-            
-            <div class="learning-modes">
-                <button class="mode-btn" data-mode="truefalse" id="trueFalseBtn">
-                    <div class="mode-icon">✓✗</div>
-                    <div class="mode-title">True or False</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="multichoice" id="multiChoiceBtn">
-                    <div class="mode-icon">◯</div>
-                    <div class="mode-title">Multiple Choice</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="fillblank" id="fillBlankBtn">
-                    <div class="mode-icon">_</div>
-                    <div class="mode-title">Fill in the Blank</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="draganddrop" id="dragDropBtn">
-                    <div class="mode-icon">⇄</div>
-                    <div class="mode-title">Drag & Drop</div>
-                </button>
-                
-                <button class="mode-btn" data-mode="addterm" id="addTermHomeBtn">
-                    <div class="mode-icon">➕</div>
-                    <div class="mode-title">Add Custom Term</div>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Create Mode Selection Page -->
-        <div class="create-mode-selection hidden" id="createModeSelectionPage">
-            <div class="neon-logo">
-                <h1>JustLEarn</h1>
-            </div>
-            
-            <h2>How would you like to add terms?</h2>
-            
-            <div class="mode-selection-buttons">
-                <button class="mode-option" data-create-mode="single" id="singleTermBtn">
-                    <div class="mode-icon">📝</div>
-                    <div class="mode-title">Single Term</div>
-                    <div class="mode-desc">Add one term with its answer</div>
-                </button>
-                
-                <button class="mode-option" data-create-mode="batch" id="batchModeBtn">
-                    <div class="mode-icon">📚</div>
-                    <div class="mode-title">Batch Mode</div>
-                    <div class="mode-desc">Add multiple terms at once</div>
-                </button>
-                
-                <button class="mode-option" data-create-mode="import" id="importFileBtn">
-                    <div class="mode-icon">📤</div>
-                    <div class="mode-title">Import from File</div>
-                    <div class="mode-desc">Upload or paste terms</div>
-                </button>
-            </div>
-            
-            <button id="backFromModeBtn" class="btn-secondary">Back to Home</button>
-        </div>
-        
-        <!-- Add Term Page -->
-        <div class="add-term-page hidden" id="addTermPage">
-            <div class="neon-logo">
-                <h1>JustLEarn</h1>
-            </div>
-            
-            <h2>Add Custom Term</h2>
-            
-            <div class="form-group">
-                <label for="termInput">Term:</label>
-                <input type="text" id="termInput" class="form-input" placeholder="Enter the term...">
-            </div>
-            
-            <div class="form-group">
-                <label for="answerInput">Answer:</label>
-                <input type="text" id="answerInput" class="form-input" placeholder="Enter the answer...">
-            </div>
-            
-            <div class="button-group">
-                <button id="addBtn" class="btn-primary">Add Term</button>
-                <button id="backBtn" class="btn-secondary">Back to Home</button>
-            </div>
-            
-            <div id="customTermsList" class="terms-list">
-                <h3>Your Custom Terms:</h3>
-                <ul id="termsList"></ul>
-            </div>
-        </div>
-        
-        <!-- Quiz Page -->
-        <div class="quiz-page hidden" id="quizPage">
-            <div class="quiz-header">
-                <div class="score-counter">
-                    <span class="score-label">Score:</span>
-                    <span id="score" class="score-value">0</span>
-                </div>
-                <h2 id="modeTitle" class="mode-header">Quiz</h2>
-                <div class="progress-bar">
-                    <div id="progress" class="progress-fill"></div>
-                </div>
-            </div>
-            
-            <div id="quizContent"></div>
-            
-            <div class="quiz-buttons">
-                <button id="nextBtn" class="btn-primary hidden">Next</button>
-                <button id="homeBtn" class="btn-secondary">Back to Home</button>
-            </div>
-        </div>
-    </div>
-    
-    <script src="app.js"></script>
+    <h1>Welcome to JustLEarn</h1>
+    <p>Your content here...</p>
 </body>
 </html>
