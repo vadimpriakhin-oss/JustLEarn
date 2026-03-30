@@ -3,22 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="JustLEarn – Quizlet-like flashcard learning app">
     <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                }).catch(function(error) {
-                    console.error('Service Worker registration failed:', error);
-                });
-            });
-        }
-    </script>
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
     <title>JustLEarn</title>
 </head>
 <body>
-    <h1>Welcome to JustLEarn</h1>
-    <p>Your content here...</p>
+
+<!-- ═══════════════════════════════════════════════
+     HOME SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+    <div class="home-container">
+        <h1 class="app-title">Just<span class="accent">L</span>earn</h1>
+        <p class="subtitle">Your neon-powered flashcard app</p>
+
+        <div class="home-buttons">
+            <button class="btn btn-primary" onclick="App.goTo('screen-create')">
+                ✏️ Create Terms
+            </button>
+
+            <h2 class="section-label">Game Modes</h2>
+
+            <button class="btn btn-mode btn-cyan" onclick="App.startGame('truefalse')">
+                ✓✗ True / False
+            </button>
+            <button class="btn btn-mode btn-pink" onclick="App.startGame('multiplechoice')">
+                ◉ Multiple Choice
+            </button>
+            <button class="btn btn-mode btn-purple" onclick="App.startGame('fillinblank')">
+                ✍️ Fill in the Blank
+            </button>
+            <button class="btn btn-mode btn-orange" onclick="App.startGame('dragdrop')">
+                ⇄ Drag &amp; Drop
+            </button>
+        </div>
+
+        <div id="home-term-count" class="term-count-badge"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CREATE TERMS SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-create" class="screen">
+    <div class="page-header">
+        <button class="btn btn-home" onclick="App.goTo('screen-home')">🏠 Home</button>
+        <h2 class="page-title">Create Terms</h2>
+        <button class="btn btn-save" onclick="App.saveTerms()">💾 Save Terms</button>
+    </div>
+
+    <div class="create-container">
+        <div class="create-hint">Fill in Term &amp; Definition, then press <kbd>Enter</kbd> to add the next one.</div>
+
+        <div id="terms-input-list">
+            <!-- Term input rows injected by JS -->
+        </div>
+
+        <div id="save-confirmation" class="save-confirmation hidden">✅ Terms saved!</div>
+
+        <h3 class="saved-terms-heading">Saved Terms (<span id="saved-count">0</span>)</h3>
+        <div id="saved-terms-list" class="saved-terms-list">
+            <!-- Saved term cards injected by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     GAME SCREEN (shared shell)
+═══════════════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+    <div class="page-header">
+        <button class="btn btn-home" onclick="App.goHome()">🏠 Home</button>
+        <h2 id="game-mode-title" class="page-title"></h2>
+        <div id="game-score" class="score-display">0 / 0</div>
+    </div>
+
+    <div class="progress-bar-wrap">
+        <div id="progress-bar" class="progress-bar"></div>
+    </div>
+
+    <!-- True / False -->
+    <div id="game-truefalse" class="game-area hidden">
+        <div class="card question-card">
+            <div class="card-label">Term</div>
+            <div id="tf-term" class="card-term"></div>
+        </div>
+        <div class="card answer-card">
+            <div class="card-label">Is the definition correct?</div>
+            <div id="tf-definition" class="card-definition"></div>
+        </div>
+        <div class="tf-buttons">
+            <button class="btn btn-true" onclick="App.tfAnswer(true)">✓ True</button>
+            <button class="btn btn-false" onclick="App.tfAnswer(false)">✗ False</button>
+        </div>
+        <div id="tf-feedback" class="feedback hidden"></div>
+    </div>
+
+    <!-- Multiple Choice -->
+    <div id="game-multiplechoice" class="game-area hidden">
+        <div class="card question-card">
+            <div class="card-label">Term</div>
+            <div id="mc-term" class="card-term"></div>
+        </div>
+        <div id="mc-options" class="mc-options"></div>
+        <div id="mc-feedback" class="feedback hidden"></div>
+    </div>
+
+    <!-- Fill in the Blank -->
+    <div id="game-fillinblank" class="game-area hidden">
+        <div class="card question-card">
+            <div class="card-label">Term</div>
+            <div id="fib-term" class="card-term"></div>
+        </div>
+        <div class="fib-input-wrap">
+            <input id="fib-input" class="fib-input" type="text" placeholder="Type the definition…" autocomplete="off">
+            <button class="btn btn-submit" onclick="App.fibSubmit()">Submit</button>
+        </div>
+        <div id="fib-feedback" class="feedback hidden"></div>
+    </div>
+
+    <!-- Drag & Drop -->
+    <div id="game-dragdrop" class="game-area hidden">
+        <div class="card question-card">
+            <div class="card-label">Term</div>
+            <div id="dd-term" class="card-term"></div>
+        </div>
+        <div class="dd-drop-zone-wrap">
+            <div class="dd-drop-label">Drop the correct answer here:</div>
+            <div id="dd-drop-zone" class="dd-drop-zone"
+                 ondragover="event.preventDefault()"
+                 ondrop="App.ddDrop(event)">
+                Drag here
+            </div>
+        </div>
+        <div id="dd-options" class="dd-options"></div>
+        <div id="dd-feedback" class="feedback hidden"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     RESULTS SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+    <div class="results-container">
+        <h2 class="results-title">🎉 Finished!</h2>
+        <div id="results-score" class="results-score"></div>
+        <div id="results-message" class="results-message"></div>
+        <div class="results-buttons">
+            <button class="btn btn-cyan" onclick="App.playAgain()">🔄 Play Again</button>
+            <button class="btn btn-home" onclick="App.goTo('screen-home')">🏠 Home</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('SW registered:', reg.scope))
+                .catch(err => console.error('SW failed:', err));
+        });
+    }
+</script>
 </body>
 </html>
