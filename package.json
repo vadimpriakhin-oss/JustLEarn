@@ -1,1 +1,32 @@
-{\n  "name": "JustLEarn",\n  "version": "1.0.0",\n  "scripts": {\n    "build:android": "npx cap build android",\n    "build:ios": "npx cap build ios"\n  },\n  "dependencies": {\n    "@capacitor/core": "^3.0.0",\n    "@capacitor/cli": "^3.0.0",\n    "@capacitor/android": "^3.0.0",\n    "@capacitor/ios": "^3.0.0"\n  }\n}
+{
+  "name": "justlearn",
+  "version": "1.0.0",
+  "description": "Learn English for exam preparation",
+  "homepage": "https://just-l-earn.vercel.app",
+  "scripts": {
+    "cap:init": "npx cap init JustLEarn com.justlearn.app --web-dir .",
+    "cap:sync": "npx cap sync",
+    "cap:update": "npx cap update",
+    "add:ios": "npx cap add ios",
+    "add:android": "npx cap add android",
+    "open:ios": "npx cap open ios",
+    "open:android": "npx cap open android",
+    "build:ios": "npx cap sync ios && npx cap open ios",
+    "build:android": "npx cap sync android && npx cap open android",
+    "build:mobile": "npx cap sync",
+    "icons:generate": "npx @capacitor/assets generate --iconBackgroundColor '#1a1a2e' --iconBackgroundColorDark '#1a1a2e' --splashBackgroundColor '#1a1a2e' --splashBackgroundColorDark '#1a1a2e'",
+    "version:check": "node -e \"const p=require('./package.json');console.log('App version:',p.version)\"",
+    "lint": "echo 'No linter configured'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/cli": "^5.0.0",
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/ios": "^5.0.0",
+    "@capacitor/splash-screen": "^5.0.0",
+    "@capacitor/status-bar": "^5.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.0"
+  }
+}
