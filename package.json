@@ -1,0 +1,1 @@
+{\n  "name": "JustLEarn",\n  "version": "1.0.0",\n  "scripts": {\n    "build:android": "npx cap build android",\n    "build:ios": "npx cap build ios"\n  },\n  "dependencies": {\n    "@capacitor/core": "^3.0.0",\n    "@capacitor/cli": "^3.0.0",\n    "@capacitor/android": "^3.0.0",\n    "@capacitor/ios": "^3.0.0"\n  }\n}
