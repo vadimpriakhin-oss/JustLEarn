@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JustLEarn</title>
+    <meta name="description" content="Interactive learning app with multiple quiz modes">
+    <meta name="theme-color" content="#00ffcc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JustLEarn">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-152x152.png">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -126,5 +133,14 @@
     </div>
     
     <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((reg) => console.log('Service worker registered:', reg.scope))
+                    .catch((err) => console.warn('Service worker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>

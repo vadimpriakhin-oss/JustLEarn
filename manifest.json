@@ -1,1 +1,78 @@
-{"name": "JustLEarn","short_name": "JL","start_url": "/index.html","display": "standalone","background_color": "#ffffff","theme_color": "#ffffff","icons": [{"src": "/icon-192.png","sizes": "192x192","type": "image/png"},{"src": "/icon-512.png","sizes": "512x512","type": "image/png"}]}
+{
+  "name": "JustLEarn",
+  "short_name": "JustLEarn",
+  "description": "Interactive learning app with multiple quiz modes",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ffcc",
+  "lang": "en",
+  "categories": ["education", "utilities"],
+  "icons": [
+    {
+      "src": "assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "True or False",
+      "short_name": "True/False",
+      "description": "Start a True or False quiz",
+      "url": "/index.html?mode=truefalse"
+    },
+    {
+      "name": "Multiple Choice",
+      "short_name": "Multi Choice",
+      "description": "Start a Multiple Choice quiz",
+      "url": "/index.html?mode=multichoice"
+    }
+  ]
+}
