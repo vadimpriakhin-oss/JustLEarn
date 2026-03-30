@@ -1,9 +1,12 @@
 const CACHE_NAME = 'justlearn-v2';
 const FILES_TO_CACHE = [
+    '/',
     '/index.html',
     '/app.js',
     '/styles.css',
     '/manifest.json',
+    '/data.js',
+    '/service-worker.js',
 ];
 
 self.addEventListener('install', (event) => {
