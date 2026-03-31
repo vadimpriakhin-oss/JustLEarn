@@ -227,7 +227,7 @@ function showQuizScreen() {
 
 function checkAnswer(userAnswer) {
     const correct = appState.shuffledTerms[appState.currentQuizIndex];
-    const correctIsTrue = correct.isTrue !== false;
+    const correctIsTrue = correct.isTrue ?? true;
     const isCorrect = (userAnswer === 'true') === correctIsTrue;
     if (isCorrect) {
         appState.score.correct++;
@@ -286,7 +286,11 @@ function showResultsScreen() {
     const main = document.querySelector('main');
     main.style.backgroundColor = '#0a0a0a';
     const message = percentage === 100 ? 'Perfect!' : percentage >= 80 ? 'Great!' : 'Keep trying!';
-    const safeMode = appState.currentQuizMode || 'true-false';
+    if (!appState.currentQuizMode) {
+        showHomeScreen();
+        return;
+    }
+    const safeMode = appState.currentQuizMode;
     main.innerHTML = `<div style="padding: 40px 20px; max-width: 600px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 100vh;"><h2 style="color: #00ffcc;">Results</h2><div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 30px; margin-bottom: 20px;"><div style="font-size: 60px; color: #00ffcc; font-weight: bold; margin-bottom: 10px;">${appState.score.correct}/${appState.score.total}</div><div style="font-size: 36px; color: #ff007f; font-weight: bold; margin-bottom: 20px;">${percentage}%</div><p style="color: #00ffcc; font-size: 20px; margin: 0;">${message}</p></div><button onclick="startQuiz('${safeMode}')" style="width: 100%; background: #00ffcc; color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 10px;">Play Again</button><button onclick="showHomeScreen()" style="width: 100%; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button></div>`;
 }
 
