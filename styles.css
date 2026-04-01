@@ -1,75 +1,51 @@
-.container {
+/* ── Splash Screen Animations ──────────────────────────────────────────────── */
+@keyframes splashGlow {
+  0% {
+    opacity: 0;
+    text-shadow: 0 0 10px #00ffcc;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 40px #00ffff, 0 0 60px #00ffcc;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 30px #00ffcc, 0 0 50px #00ffff;
+  }
+}
+
+@keyframes splashFlyAway {
+  0% {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(200vw) translateY(-100vh) scale(0.2);
+  }
+}
+
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0a0a0a;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #0d0d0d;
+  z-index: 9999;
 }
 
-h1, h2, h3 {
+#splash-logo {
+  font-size: 80px;
+  font-weight: bold;
   color: #00ffcc;
-  text-shadow: 0 0 20px #00ffcc, 0 0 30px #00ffcc;
+  animation: splashGlow 2s ease-in-out forwards;
 }
 
-p {
-  color: #ffffff;
-  text-shadow: 0 0 10px #ffffff;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Scrollable Containers ───────────────────────────────────────────────── */
-.home-container,
-.create-container,
-.quiz-container,
-.results-container {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* ── Common Buttons ──────────────────────────────────────────────────────── */
-button {
-  background-color: #00ccff;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 12px;
-  transition: box-shadow 0.3s ease;
-}
-
-button:hover {
-  box-shadow: 0 0 20px #00ccff, 0 0 30px #00ccff;
-}
-
-@media (max-width: 600px) {
-  .container {
-    height: auto;
-  }
-  button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-}
-
-@keyframes glow {
-  0% { text-shadow: 0 0 20px #00ffcc, 0 0 30px #00ffcc; }
-  50% { text-shadow: 0 0 30px #00ffff, 0 0 40px #00ffff; }
-  100% { text-shadow: 0 0 20px #00ffcc, 0 0 30px #00ffcc; }
-}
-
-h1 {
-  animation: glow 1.5s infinite alternate;
+#splash-screen.fly-away #splash-logo {
+  animation: splashGlow 2s ease-in-out, splashFlyAway 1.5s ease-in-out 2s forwards;
 }
