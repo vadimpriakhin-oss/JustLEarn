@@ -1,4 +1,16 @@
-let appState = { currentScreen: 'home', userTerms: [], currentQuizIndex: 0, score: { correct: 0, total: 0 }, currentQuizMode: null, shuffledTerms: [], currentAnswerId: null, draggedElement: null };
+let appState = {
+    currentScreen: 'dashboard',
+    learnChiks: [],
+    currentLearnChikId: null,
+    userTerms: [],
+    learnChikName: '',
+    currentQuizIndex: 0,
+    score: { correct: 0, total: 0 },
+    currentQuizMode: null,
+    shuffledTerms: [],
+    currentAnswerId: null,
+    draggedElement: null
+};
 
 const DEFAULT_TERMS = [
     { term: 'Photosynthesis', definition: 'Process by which plants convert sunlight into chemical energy', isTrue: true },
@@ -10,8 +22,8 @@ const DEFAULT_TERMS = [
 
 document.addEventListener('DOMContentLoaded', () => {
     document.body.style.backgroundColor = '#0a0a0a';
-    loadTerms();
-    showHomeScreen();
+    loadLearnChiks();
+    showDashboard();
     registerServiceWorker();
 });
 
@@ -23,56 +35,172 @@ function registerServiceWorker() {
     }
 }
 
-function loadTerms() {
+// ── LearnChik Utilities ─────────────────────────────────────────────────────
+
+function generateLearnChikId() {
+    return Date.now() + '-' + Math.random().toString(36).slice(2, 11);
+}
+
+function loadLearnChiks() {
     try {
-        const stored = localStorage.getItem('justlearnTerms');
-        appState.userTerms = stored ? JSON.parse(stored) : DEFAULT_TERMS;
+        const stored = localStorage.getItem('justlearnChiks');
+        appState.learnChiks = stored ? JSON.parse(stored) : [];
     } catch (error) {
-        console.error('Error loading terms:', error);
-        appState.userTerms = DEFAULT_TERMS;
+        console.error('Error loading LearnChiks:', error);
+        appState.learnChiks = [];
     }
 }
 
-function saveTerms() {
+function saveLearnChiks() {
     try {
-        localStorage.setItem('justlearnTerms', JSON.stringify(appState.userTerms));
+        localStorage.setItem('justlearnChiks', JSON.stringify(appState.learnChiks));
     } catch (error) {
-        console.error('Error saving terms:', error);
-        alert('Failed to save terms');
+        console.error('Error saving LearnChiks:', error);
+        alert('Failed to save LearnChiks');
     }
 }
 
-function showHomeScreen() {
+function saveNewLearnChik() {
+    const name = appState.learnChikName.trim();
+    if (!name) {
+        alert('Please enter a name for your LearnChik!');
+        return false;
+    }
+    const terms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim());
+    if (terms.length === 0) {
+        alert('Add at least one term!');
+        return false;
+    }
+    const learnChik = {
+        id: generateLearnChikId(),
+        name: name,
+        createdAt: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'medium' }),
+        terms: terms
+    };
+    appState.learnChiks.push(learnChik);
+    saveLearnChiks();
+    return true;
+}
+
+function deleteLearnChik(id) {
+    if (!confirm('Delete this LearnChik? This cannot be undone.')) return;
+    appState.learnChiks = appState.learnChiks.filter(lc => lc.id !== id);
+    saveLearnChiks();
+    showMyLearnChiks();
+}
+
+function selectLearnChik(id) {
+    const learnChik = appState.learnChiks.find(lc => lc.id === id);
+    if (!learnChik) return;
+    appState.currentLearnChikId = id;
+    appState.userTerms = learnChik.terms;
+    showStudyModeSelection();
+}
+
+// ── Screens ─────────────────────────────────────────────────────────────────
+
+function showDashboard() {
+    appState.currentScreen = 'dashboard';
     const main = document.querySelector('main');
     main.style.backgroundColor = '#0a0a0a';
     main.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
-    <h2 style="font-size: 48px; margin-bottom: 40px; color: #00ffcc; text-shadow: 0 0 20px #00ffcc;">🧠 JustLEarn</h2>
-    <p style="margin-bottom: 30px; color: #fff;">Choose a learning mode:</p>
+    <h2 style="font-size: 48px; margin-bottom: 15px; color: #00ffcc; text-shadow: 0 0 20px #00ffcc; text-align: center;">🧠 JustLEarn</h2>
+    <p style="margin-bottom: 40px; color: #aaa; font-size: 16px; text-align: center;">Your Study Sets</p>
     <div style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px;">
-        <button onclick="startQuiz('true-false')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✅ True/False</button>
-        <button onclick="startQuiz('multiple-choice')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🎯 Multiple Choice</button>
-        <button onclick="startQuiz('fill-blank')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✏️ Fill the Blank</button>
-        <button onclick="startQuiz('drag-drop')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🎪 Drag & Drop</button>
-        <button onclick="showCreateScreen()" style="background: linear-gradient(135deg, #ff007f, #ff4466); color: #fff; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🆕 Create Terms</button>
+        <button onclick="showCreateLearnChikScreen()" style="background: linear-gradient(135deg, #ff007f, #ff4466); color: #fff; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">🆕 Create New LearnChik</button>
+        <button onclick="showMyLearnChiks()" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">📚 My LearnChiks</button>
     </div>
 </div>`;
 }
 
-function showCreateScreen() {
+function showCreateLearnChikScreen() {
+    appState.currentScreen = 'create';
+    appState.userTerms = [];
+    appState.learnChikName = '';
     const main = document.querySelector('main');
     main.style.backgroundColor = '#0a0a0a';
     main.innerHTML = `<div style="padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh;">
-    <h2 style="text-align: center; margin-bottom: 30px; color: #00ffcc;">🆕 Create Terms</h2>
+    <h2 style="text-align: center; margin-bottom: 25px; color: #00ffcc;">🆕 Create LearnChik</h2>
+    <input id="learnChikNameInput" type="text" placeholder="e.g., Biology 101" value=""
+        style="width: 100%; background: #1a1a2e; color: #00ffcc; border: 2px solid #ff007f; padding: 14px; border-radius: 8px; margin-bottom: 25px; font-size: 16px; box-sizing: border-box;"
+        oninput="appState.learnChikName = this.value" />
     <div id="termsContainer"></div>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
         <button onclick="addTermField()" style="background: #00ffcc; color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">+ Add Term</button>
-        <button onclick="saveAndHome()" style="background: #00aa00; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">✅ Save</button>
-        <button onclick="showHomeScreen()" style="background: #555; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">🏠 Home</button>
+        <button onclick="saveLearnChikAndReturn()" style="background: #00aa00; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">💾 Save LearnChik</button>
+        <button onclick="showDashboard()" style="background: #555; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">✖ Cancel</button>
     </div>
     <div id="termsList"></div>
 </div>`;
     renderTermFields();
     renderTermsList();
+}
+
+function showMyLearnChiks() {
+    appState.currentScreen = 'library';
+    const main = document.querySelector('main');
+    main.style.backgroundColor = '#0a0a0a';
+
+    let cardsHtml = '';
+    if (appState.learnChiks.length === 0) {
+        cardsHtml = `<p style="color: #888; text-align: center; margin-top: 40px; font-size: 16px;">No LearnChiks yet. Create your first one!</p>`;
+    } else {
+        cardsHtml = `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;">`;
+        appState.learnChiks.forEach(lc => {
+            const id = lc.id;
+            cardsHtml += `<div onclick="selectLearnChik('${id}')"
+                style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 10px; padding: 20px; cursor: pointer; transition: box-shadow 0.2s; position: relative;"
+                onmouseover="this.style.boxShadow='0 0 20px #00ffcc44'" onmouseout="this.style.boxShadow='none'">
+                <div style="font-size: 20px; font-weight: bold; color: #00ffcc; margin-bottom: 8px;">📘 ${escapeHtml(lc.name)}</div>
+                <div style="color: #aaa; font-size: 14px; margin-bottom: 4px;">📊 ${lc.terms.length} term${lc.terms.length !== 1 ? 's' : ''}</div>
+                <div style="color: #666; font-size: 12px; margin-bottom: 12px;">📅 ${escapeHtml(lc.createdAt)}</div>
+                <button onclick="event.stopPropagation(); deleteLearnChik('${id}')"
+                    style="background: #ff3333; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold;">🗑️ Delete</button>
+            </div>`;
+        });
+        cardsHtml += `</div>`;
+    }
+
+    main.innerHTML = `<div style="padding: 20px; max-width: 900px; margin: 0 auto; min-height: 100vh;">
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+        <button onclick="showDashboard()" style="background: #333; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;">← Back</button>
+        <h2 style="margin: 0; color: #00ffcc;">📚 My LearnChiks</h2>
+    </div>
+    ${cardsHtml}
+</div>`;
+}
+
+function showStudyModeSelection() {
+    appState.currentScreen = 'study-modes';
+    const learnChik = appState.learnChiks.find(lc => lc.id === appState.currentLearnChikId);
+    const name = learnChik ? learnChik.name : 'Unknown';
+    const count = appState.userTerms.length;
+    const main = document.querySelector('main');
+    main.style.backgroundColor = '#0a0a0a';
+    main.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+    <div style="width: 100%; max-width: 400px; background: #1a1a2e; border: 1px solid #00ffcc44; border-radius: 10px; padding: 14px 20px; margin-bottom: 30px; text-align: center;">
+        <div style="color: #00ffcc; font-size: 18px; font-weight: bold;">📘 ${escapeHtml(name)}</div>
+        <div style="color: #aaa; font-size: 13px; margin-top: 4px;">📊 ${count} term${count !== 1 ? 's' : ''}</div>
+    </div>
+    <p style="margin-bottom: 20px; color: #fff; font-size: 16px;">Choose a learning mode:</p>
+    <div style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px;">
+        <button onclick="startQuiz('true-false')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px;">✅ True/False</button>
+        <button onclick="startQuiz('multiple-choice')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px;">🎯 Multiple Choice</button>
+        <button onclick="startQuiz('fill-blank')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px;">✏️ Fill the Blank</button>
+        <button onclick="startQuiz('drag-drop')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px;">🎪 Drag & Drop</button>
+        <button onclick="showMyLearnChiks()" style="background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">← Back to My LearnChiks</button>
+    </div>
+</div>`;
+}
+
+function saveLearnChikAndReturn() {
+    const nameInput = document.getElementById('learnChikNameInput');
+    if (nameInput) appState.learnChikName = nameInput.value;
+    appState.userTerms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim());
+    if (saveNewLearnChik()) {
+        alert('LearnChik saved!');
+        showDashboard();
+    }
 }
 
 function renderTermFields() {
@@ -115,32 +243,21 @@ function removeTermField(index) {
 
 function renderTermsList() {
     const list = document.getElementById('termsList');
+    if (!list) return;
     if (appState.userTerms.length === 0) {
-        list.innerHTML = '<p style=color: #888; text-align: center;>No terms yet</p>';
+        list.innerHTML = '<p style="color: #888; text-align: center;">No terms yet</p>';
         return;
     }
     let html = `<h3 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">📚 Terms: ${appState.userTerms.length}</h3><ul style="list-style: none; padding: 0;">`;
     appState.userTerms.forEach((item, i) => {
-        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${item.term}</strong><br/><span style="color: #aaa; font-size: 12px;">${item.definition}</span></li>`;
+        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${escapeHtml(item.term)}</strong><br/><span style="color: #aaa; font-size: 12px;">${escapeHtml(item.definition)}</span></li>`;
     });
     list.innerHTML = html + '</ul>';
 }
 
-function saveAndHome() {
-    appState.userTerms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim());
-    if (appState.userTerms.length === 0) {
-        alert('Add at least one term!');
-        return;
-    }
-    saveTerms();
-    alert(appState.userTerms.length + ' terms saved!');
-    showHomeScreen();
-}
-
 function startQuiz(mode) {
     if (appState.userTerms.length === 0) {
-        alert('Create terms first!');
-        showCreateScreen();
+        alert('No terms in this LearnChik!');
         return;
     }
     appState.currentQuizMode = mode;
@@ -188,7 +305,7 @@ function showQuizScreen() {
         content += `</div><div id="dropZone" style="background: #0f0f1e; border: 3px dashed #ff007f; border-radius: 8px; padding: 30px; text-align: center; color: #ff007f; min-height: 100px; display: flex; align-items: center; justify-content: center;">Drop correct answer here</div>`;
     }
 
-    content += `<button onclick="showHomeScreen()" style="width: 100%; margin-top: 20px; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button></div>`;
+    content += `<button onclick="showStudyModeSelection()" style="width: 100%; margin-top: 20px; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">← Back to Modes</button></div>`;
     document.querySelector('main').style.backgroundColor = '#0a0a0a';
     document.querySelector('main').innerHTML = content;
     if (appState.currentQuizMode === 'drag-drop') {
@@ -304,7 +421,7 @@ function showResultsScreen() {
             <p style="color: #00ffcc; font-size: 20px; margin: 0;">${message}</p>
         </div>
         <button onclick="startQuiz('${appState.currentQuizMode}')" style="width: 100%; background: #00ffcc; color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 10px;">Play Again</button>
-        <button onclick="showHomeScreen()" style="width: 100%; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button>
+        <button onclick="showStudyModeSelection()" style="width: 100%; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">← Back to Modes</button>
     </div>`;
 }
 
@@ -331,4 +448,13 @@ function getRandomWrong(correct, count) {
         return shuffle([...wrong, ...generic.slice(0, needed)]);
     }
     return shuffle(wrong).slice(0, count);
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
