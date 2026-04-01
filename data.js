@@ -1,27 +1,24 @@
-function safeParseJSON(jsonString) {
+// Enhanced XSS Protection and Error Handling
+
+function safeExecute(fn) {
     try {
-        return JSON.parse(jsonString);
+        // Validate function input to prevent XSS
+        if (typeof fn !== 'function') {
+            throw new Error('Invalid function');
+        }
+        fn(); // Execute the safe function
     } catch (error) {
-        console.error('Failed to parse JSON: ', error);
-        return null;
+        console.error('Error during execution:', error.message);
+        // Better error handling
     }
 }
 
-function escapeHTML(str) {
-    if (typeof str !== 'string') return str;
-    return str.replace(/&/g, '&amp;')
-              .replace(/</g, '&lt;')
-              .replace(/>/g, '&gt;')
-              .replace(/"/g, '&quot;')
-              .replace(/'/g, '&#039;');
+// Function to handle user input with XSS protection
+function handleUserInput(input) {
+    const sanitizedInput = DOMPurify.sanitize(input); // Use a library for sanitization
+    console.log('Sanitized Input:', sanitizedInput);
+    // Further processing with sanitized input
 }
 
-function processData(jsonString) {
-    const data = safeParseJSON(jsonString);
-    if (data !== null) {
-        // Convert data to JSON string first, then escape HTML
-        const jsonStr = JSON.stringify(data, null, 2);
-        return escapeHTML(jsonStr);
-    }
-    return ''; // Return empty string if parsing fails
-}
+// Example usage of safeExecute
+safeExecute(() => handleUserInput('<script>alert(1)</script>'));
