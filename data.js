@@ -13,7 +13,9 @@ function escapeHTML(str) {
               .replace(/</g, '&lt;')
               .replace(/>/g, '&gt;')
               .replace(/"/g, '&quot;')
-              .replace(/'/g, '&#039;');
+              .replace(/'/g, '&#039;')
+              .replace(/`/g, '&#x60;')
+              .replace(/\//g, '&#x2F;');
 }
 
 function processData(jsonString) {

@@ -18,15 +18,23 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keyList) => Promise.all(
-      keyList.map((key) => {
-        if (key !== CACHE_NAME) return caches.delete(key);
-      })
+      keyList
+        .filter((key) => key !== CACHE_NAME)
+        .map((key) => caches.delete(key))
     )).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => response || fetch(event.request))
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) return cachedResponse;
+      return fetch(event.request).catch(() => {
+        return new Response('Offline - resource not available', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
+      });
+    })
   );
 });
