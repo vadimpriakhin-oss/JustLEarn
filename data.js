@@ -19,8 +19,9 @@ function escapeHTML(str) {
 function processData(jsonString) {
     const data = safeParseJSON(jsonString);
     if (data !== null) {
-        // Assuming data is an object we want to escape
-        return escapeHTML(JSON.stringify(data, null, 2));
+        // Convert data to JSON string first, then escape HTML
+        const jsonStr = JSON.stringify(data, null, 2);
+        return escapeHTML(jsonStr);
     }
     return ''; // Return empty string if parsing fails
 }
