@@ -1,1 +1,334 @@
-let appState = { currentScreen: 'home', userTerms: [], currentQuizIndex: 0, score: { correct: 0, total: 0 }, currentQuizMode: null, shuffledTerms: [], currentAnswerId: null }; const DEFAULT_TERMS = [ { term: 'Photosynthesis', definition: 'Process by which plants convert sunlight into chemical energy', isTrue: true }, { term: 'Mitochondria', definition: 'Powerhouse of the cell responsible for energy production', isTrue: true }, { term: 'Osmosis', definition: 'Movement of water across a semipermeable membrane', isTrue: true }, { term: 'Enzyme', definition: 'Protein that speeds up chemical reactions in cells', isTrue: true }, { term: 'DNA', definition: 'Molecule that carries genetic instructions for life', isTrue: true } ]; document.addEventListener('DOMContentLoaded', () => { document.body.style.backgroundColor = '#0a0a0a'; loadTerms(); showHomeScreen(); }); function loadTerms() { const stored = localStorage.getItem('justlearnTerms'); appState.userTerms = stored ? JSON.parse(stored) : DEFAULT_TERMS; } function saveTerms() { localStorage.setItem('justlearnTerms', JSON.stringify(appState.userTerms)); } function showHomeScreen() { const main = document.querySelector('main'); main.style.backgroundColor = '#0a0a0a'; main.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;"><h2 style="font-size: 48px; margin-bottom: 40px; color: #00ffcc; text-shadow: 0 0 20px #00ffcc;">🎓 JustLEarn</h2><p style="margin-bottom: 30px; color: #fff;">Choose a learning mode:</p><div style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px;"><button onclick="startQuiz('true-false')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🔵 True/False</button><button onclick="startQuiz('multiple-choice')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🎯 Multiple Choice</button><button onclick="startQuiz('fill-blank')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✏️ Fill the Blank</button><button onclick="showCreateScreen()" style="background: linear-gradient(135deg, #ff007f, #ff4466); color: #fff; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">➕ Create Terms</button></div></div>`; } function showCreateScreen() { const main = document.querySelector('main'); main.style.backgroundColor = '#0a0a0a'; main.innerHTML = `<div style="padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh;"><h2 style="text-align: center; margin-bottom: 30px; color: #00ffcc;">📚 Create Terms</h2><div id="termsContainer"></div><div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;"><button onclick="addTermField()" style="background: #00ffcc; color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">+ Add Term</button><button onclick="saveAndHome()" style="background: #00aa00; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">✅ Save</button><button onclick="showHomeScreen()" style="background: #555; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">🏠 Home</button></div><div id="termsList"></div></div>`; renderTermFields(); renderTermsList(); } function renderTermFields() { const container = document.getElementById('termsContainer'); container.innerHTML = ''; appState.userTerms.forEach((item, index) => { const div = document.createElement('div'); div.style.cssText = 'background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 15px; margin-bottom: 15px;'; const input = document.createElement('input'); input.type = 'text'; input.placeholder = 'Term'; input.value = item.term; input.style.cssText = 'width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px; box-sizing: border-box;'; input.addEventListener('change', (e) => { appState.userTerms[index].term = e.target.value; }); const textarea = document.createElement('textarea'); textarea.placeholder = 'Definition'; textarea.value = item.definition; textarea.style.cssText = 'width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; min-height: 60px; font-size: 14px; box-sizing: border-box;'; textarea.addEventListener('change', (e) => { appState.userTerms[index].definition = e.target.value; }); const btn = document.createElement('button'); btn.innerHTML = '🗑️ Delete'; btn.style.cssText = 'width: 100%; background: #ff3333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold;'; btn.addEventListener('click', () => { removeTermField(index); }); div.appendChild(input); div.appendChild(textarea); div.appendChild(btn); container.appendChild(div); }); } function addTermField() { appState.userTerms.push({ term: '', definition: '', isTrue: true }); renderTermFields(); } function removeTermField(index) { appState.userTerms.splice(index, 1); renderTermFields(); } function renderTermsList() { const list = document.getElementById('termsList'); if (appState.userTerms.length === 0) { list.innerHTML = '<p style="color: #888; text-align: center;">No terms yet</p>'; return; } let html = `<h3 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">📋 Terms: ${appState.userTerms.length}</h3><ul style="list-style: none; padding: 0;">`; appState.userTerms.forEach((item, i) => { html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${item.term}</strong><br/><span style="color: #aaa; font-size: 12px;">${item.definition}</span></li>`; }); list.innerHTML = html + '</ul>'; } function saveAndHome() { appState.userTerms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim()); if (appState.userTerms.length === 0) { alert('Add at least one term!'); return; } saveTerms(); alert(appState.userTerms.length + ' terms saved!'); showHomeScreen(); } function startQuiz(mode) { if (appState.userTerms.length === 0) { alert('Create terms first!'); showCreateScreen(); return; } appState.currentQuizMode = mode; appState.currentQuizIndex = 0; appState.score = { correct: 0, total: appState.userTerms.length }; appState.shuffledTerms = shuffle([...appState.userTerms]); showQuizScreen(); } function showQuizScreen() { if (appState.currentQuizIndex >= appState.shuffledTerms.length) { showResultsScreen(); return; } const term = appState.shuffledTerms[appState.currentQuizIndex]; const progress = appState.currentQuizIndex + 1; const total = appState.shuffledTerms.length; const modeName = appState.currentQuizMode.replace('-', ' ').toUpperCase(); let content = `<div style="padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh;"><div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 style="margin: 0; color: #00ffcc;">${modeName}</h2><div style="color: #00ffcc; font-weight: bold;">Score: ${appState.score.correct}/${appState.score.total}</div></div><div style="background: #1a1a2e; border: 1px solid #00ffcc; border-radius: 10px; height: 8px; margin-bottom: 20px; overflow: hidden;"><div style="background: linear-gradient(90deg, #00ffcc, #ff007f); height: 100%; width: ${(progress / total) * 100}%;"></div></div><p style="color: #888; text-align: center;">Question ${progress}/${total}</p><div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;"><h3 style="margin: 0; color: #00ffcc;">${term.term}</h3></div>`; if (appState.currentQuizMode === 'true-false') { content += `<div style="display: flex; gap: 10px;"><button onclick="checkAnswer('true')" style="flex: 1; background: #00aa00; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">True</button><button onclick="checkAnswer('false')" style="flex: 1; background: #aa0000; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">False</button></div>`; } else if (appState.currentQuizMode === 'multiple-choice') { const wrong = getRandomWrong(term.definition, 3); const options = shuffle([term.definition, ...wrong]); content += '<div style="display: flex; flex-direction: column; gap: 10px;">'; options.forEach((opt, i) => { const id = 'opt-' + i + '-' + Date.now(); content += `<button id="${id}" onclick="checkAnswerMultiple('${id}', '${opt.replace(/'/g, '\'')}')" style="background: #1a1a2e; color: #00ffcc; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: bold;">${String.fromCharCode(65+i)}: ${opt}</button>`; }); content += '</div>'; } else if (appState.currentQuizMode === 'fill-blank') { content += `<input type="text" id="answerInput" placeholder="Type answer" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 2px solid #00ffcc; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 16px; box-sizing: border-box;"><button onclick="checkFillBlank()" style="width: 100%; background: #00ffcc; color: #000; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Submit</button>`; } content += `<button onclick="showHomeScreen()" style="width: 100%; margin-top: 20px; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button></div>`; document.querySelector('main').style.backgroundColor = '#0a0a0a'; document.querySelector('main').innerHTML = content; } function checkAnswer(userAnswer) { const correct = appState.shuffledTerms[appState.currentQuizIndex]; let isCorrect = false; if (appState.currentQuizMode === 'true-false') { isCorrect = (userAnswer === 'true' ? true : false) === correct.isTrue; } else { isCorrect = userAnswer === correct.definition; } if (isCorrect) { appState.score.correct++; showFeedback('Correct!', '#00ff00'); } else { showFeedback('Incorrect!', '#ff3333'); } setTimeout(() => { appState.currentQuizIndex++; showQuizScreen(); }, 1500); } function checkAnswerMultiple(id, answer) { const correct = appState.shuffledTerms[appState.currentQuizIndex]; const isCorrect = answer === correct.definition; if (isCorrect) { appState.score.correct++; showFeedback('Correct!', '#00ff00'); } else { showFeedback('Incorrect!', '#ff3333'); } setTimeout(() => { appState.currentQuizIndex++; showQuizScreen(); }, 1500); } function checkFillBlank() { const userAnswer = document.getElementById('answerInput').value.trim().toLowerCase(); const correct = appState.shuffledTerms[appState.currentQuizIndex].term.toLowerCase(); if (userAnswer === correct) { appState.score.correct++; showFeedback('Correct!', '#00ff00'); } else { showFeedback('Incorrect!', '#ff3333'); } setTimeout(() => { appState.currentQuizIndex++; showQuizScreen(); }, 1500); } function showFeedback(message, color) { const feedback = document.createElement('div'); feedback.textContent = message; feedback.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); color: ' + color + '; padding: 30px 50px; border-radius: 10px; font-size: 24px; font-weight: bold; border: 2px solid ' + color + '; z-index: 1000; box-shadow: 0 0 30px ' + color + ';'; document.body.appendChild(feedback); setTimeout(() => feedback.remove(), 1500); } function showResultsScreen() { const percentage = Math.round((appState.score.correct / appState.score.total) * 100); const main = document.querySelector('main'); main.style.backgroundColor = '#0a0a0a'; const message = percentage === 100 ? 'Perfect!' : percentage >= 80 ? 'Great!' : 'Keep trying!'; main.innerHTML = `<div style="padding: 40px 20px; max-width: 600px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 100vh;"><h2 style="color: #00ffcc;">Results</h2><div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 30px; margin-bottom: 20px;"><div style="font-size: 60px; color: #00ffcc; font-weight: bold; margin-bottom: 10px;">${appState.score.correct}/${appState.score.total}</div><div style="font-size: 36px; color: #ff007f; font-weight: bold; margin-bottom: 20px;">${percentage}%</div><p style="color: #00ffcc; font-size: 20px; margin: 0;">${message}</p></div><button onclick="startQuiz('${appState.currentQuizMode}')" style="width: 100%; background: #00ffcc; color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 10px;">Play Again</button><button onclick="showHomeScreen()" style="width: 100%; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button></div>`; } function shuffle(arr) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const temp = a[i]; a[i] = a[j]; a[j] = temp; } return a; } function getRandomWrong(correct, count) { const all = appState.userTerms.map(t => t.definition); const wrong = all.filter(a => a !== correct); if (wrong.length === 0) { return ['Sample answer 1', 'Sample answer 2', 'Sample answer 3'].slice(0, count); } if (wrong.length < count) { const needed = count - wrong.length; const generic = ['Sample answer ' + (count + 1), 'Sample answer ' + (count + 2), 'Sample answer ' + (count + 3)]; return shuffle([...wrong, ...generic.slice(0, needed)]); } return shuffle(wrong).slice(0, count); }
+let appState = { currentScreen: 'home', userTerms: [], currentQuizIndex: 0, score: { correct: 0, total: 0 }, currentQuizMode: null, shuffledTerms: [], currentAnswerId: null, draggedElement: null };
+
+const DEFAULT_TERMS = [
+    { term: 'Photosynthesis', definition: 'Process by which plants convert sunlight into chemical energy', isTrue: true },
+    { term: 'Mitochondria', definition: 'Powerhouse of the cell responsible for energy production', isTrue: true },
+    { term: 'Osmosis', definition: 'Movement of water across a semipermeable membrane', isTrue: true },
+    { term: 'Enzyme', definition: 'Protein that speeds up chemical reactions in cells', isTrue: true },
+    { term: 'DNA', definition: 'Molecule that carries genetic instructions for life', isTrue: true }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.style.backgroundColor = '#0a0a0a';
+    loadTerms();
+    showHomeScreen();
+    registerServiceWorker();
+});
+
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => console.log('Service Worker registered'))
+            .catch(err => console.error('Service Worker registration failed:', err));
+    }
+}
+
+function loadTerms() {
+    try {
+        const stored = localStorage.getItem('justlearnTerms');
+        appState.userTerms = stored ? JSON.parse(stored) : DEFAULT_TERMS;
+    } catch (error) {
+        console.error('Error loading terms:', error);
+        appState.userTerms = DEFAULT_TERMS;
+    }
+}
+
+function saveTerms() {
+    try {
+        localStorage.setItem('justlearnTerms', JSON.stringify(appState.userTerms));
+    } catch (error) {
+        console.error('Error saving terms:', error);
+        alert('Failed to save terms');
+    }
+}
+
+function showHomeScreen() {
+    const main = document.querySelector('main');
+    main.style.backgroundColor = '#0a0a0a';
+    main.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+    <h2 style="font-size: 48px; margin-bottom: 40px; color: #00ffcc; text-shadow: 0 0 20px #00ffcc;">🧠 JustLEarn</h2>
+    <p style="margin-bottom: 30px; color: #fff;">Choose a learning mode:</p>
+    <div style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px;">
+        <button onclick="startQuiz('true-false')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✅ True/False</button>
+        <button onclick="startQuiz('multiple-choice')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🎯 Multiple Choice</button>
+        <button onclick="startQuiz('fill-blank')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">✏️ Fill the Blank</button>
+        <button onclick="startQuiz('drag-drop')" style="background: linear-gradient(135deg, #00ffcc, #00aa88); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🎪 Drag & Drop</button>
+        <button onclick="showCreateScreen()" style="background: linear-gradient(135deg, #ff007f, #ff4466); color: #fff; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">🆕 Create Terms</button>
+    </div>
+</div>`;
+}
+
+function showCreateScreen() {
+    const main = document.querySelector('main');
+    main.style.backgroundColor = '#0a0a0a';
+    main.innerHTML = `<div style="padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh;">
+    <h2 style="text-align: center; margin-bottom: 30px; color: #00ffcc;">🆕 Create Terms</h2>
+    <div id="termsContainer"></div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
+        <button onclick="addTermField()" style="background: #00ffcc; color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">+ Add Term</button>
+        <button onclick="saveAndHome()" style="background: #00aa00; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">✅ Save</button>
+        <button onclick="showHomeScreen()" style="background: #555; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">🏠 Home</button>
+    </div>
+    <div id="termsList"></div>
+</div>`;
+    renderTermFields();
+    renderTermsList();
+}
+
+function renderTermFields() {
+    const container = document.getElementById('termsContainer');
+    container.innerHTML = '';
+    appState.userTerms.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 15px; margin-bottom: 15px;';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Term';
+        input.value = item.term;
+        input.style.cssText = 'width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px; box-sizing: border-box;';
+        input.addEventListener('change', (e) => { appState.userTerms[index].term = e.target.value; });
+        const textarea = document.createElement('textarea');
+        textarea.placeholder = 'Definition';
+        textarea.value = item.definition;
+        textarea.style.cssText = 'width: 100%; background: #0f0f1e; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px; min-height: 60px; font-size: 14px; box-sizing: border-box;';
+        textarea.addEventListener('change', (e) => { appState.userTerms[index].definition = e.target.value; });
+        const btn = document.createElement('button');
+        btn.innerHTML = '🗑️ Delete';
+        btn.style.cssText = 'width: 100%; background: #ff3333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold;';
+        btn.addEventListener('click', () => { removeTermField(index); });
+        div.appendChild(input);
+        div.appendChild(textarea);
+        div.appendChild(btn);
+        container.appendChild(div);
+    });
+}
+
+function addTermField() {
+    appState.userTerms.push({ term: '', definition: '', isTrue: true });
+    renderTermFields();
+}
+
+function removeTermField(index) {
+    appState.userTerms.splice(index, 1);
+    renderTermFields();
+}
+
+function renderTermsList() {
+    const list = document.getElementById('termsList');
+    if (appState.userTerms.length === 0) {
+        list.innerHTML = '<p style=color: #888; text-align: center;>No terms yet</p>';
+        return;
+    }
+    let html = `<h3 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">📚 Terms: ${appState.userTerms.length}</h3><ul style="list-style: none; padding: 0;">`;
+    appState.userTerms.forEach((item, i) => {
+        html += `<li style="background: #1a1a2e; padding: 12px; margin: 8px 0; border-left: 4px solid #ff007f; border-radius: 4px; color: #fff;"><strong style="color: #00ffcc;">${i+1}. ${item.term}</strong><br/><span style="color: #aaa; font-size: 12px;">${item.definition}</span></li>`;
+    });
+    list.innerHTML = html + '</ul>';
+}
+
+function saveAndHome() {
+    appState.userTerms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim());
+    if (appState.userTerms.length === 0) {
+        alert('Add at least one term!');
+        return;
+    }
+    saveTerms();
+    alert(appState.userTerms.length + ' terms saved!');
+    showHomeScreen();
+}
+
+function startQuiz(mode) {
+    if (appState.userTerms.length === 0) {
+        alert('Create terms first!');
+        showCreateScreen();
+        return;
+    }
+    appState.currentQuizMode = mode;
+    appState.currentQuizIndex = 0;
+    appState.score = { correct: 0, total: appState.userTerms.length };
+    appState.shuffledTerms = shuffle([...appState.userTerms]);
+    showQuizScreen();
+}
+
+function showQuizScreen() {
+    if (appState.currentQuizIndex >= appState.shuffledTerms.length) {
+        showResultsScreen();
+        return;
+    }
+    const term = appState.shuffledTerms[appState.currentQuizIndex];
+    const progress = appState.currentQuizIndex + 1;
+    const total = appState.shuffledTerms.length;
+    const modeName = appState.currentQuizMode.replace('-', ' ').toUpperCase();
+    let content = `<div style="padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 style="margin: 0; color: #00ffcc;">${modeName}</h2><div style="color: #00ffcc; font-weight: bold;">Score: ${appState.score.correct}/${appState.score.total}</div></div>
+    <div style="background: #1a1a2e; border: 1px solid #00ffcc; border-radius: 10px; height: 8px; margin-bottom: 20px; overflow: hidden;"><div style="background: linear-gradient(90deg, #00ffcc, #ff007f); height: 100%; width: ${(progress / total) * 100}%;"></div></div>
+    <p style="color: #888; text-align: center;">Question ${progress}/${total}</p>
+    <div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;"><h3 style="margin: 0; color: #00ffcc;">${term.term}</h3></div>`;
+
+    if (appState.currentQuizMode === 'true-false') {
+        content += `<div style="display: flex; gap: 10px;"><button onclick="checkAnswer('true')" style="flex: 1; background: #00aa00; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">True</button><button onclick="checkAnswer('false')" style="flex: 1; background: #aa0000; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">False</button></div>`;
+    } else if (appState.currentQuizMode === 'multiple-choice') {
+        const wrong = getRandomWrong(term.definition, 3);
+        const options = shuffle([term.definition, ...wrong]);
+        content += '<div style="display: flex; flex-direction: column; gap: 10px;">';
+        options.forEach((opt, i) => {
+            const id = 'opt-' + i + '-' + Date.now();
+            content += `<button id="${id}" onclick="checkAnswerMultiple('${id}', '${opt.replace(/'/g, "\'")}')" style="background: #1a1a2e; color: #00ffcc; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: bold;">${String.fromCharCode(65+i)}: ${opt}</button>`;
+        });
+        content += '</div>';
+    } else if (appState.currentQuizMode === 'fill-blank') {
+        content += `<input type="text" id="answerInput" placeholder="Type answer" style="width: 100%; background: #0f0f1e; color: #00ffcc; border: 2px solid #00ffcc; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 16px; box-sizing: border-box;"><button onclick="checkFillBlank()" style="width: 100%; background: #00ffcc; color: #000; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Submit</button>`;
+    } else if (appState.currentQuizMode === 'drag-drop') {
+        content += `<div id="dragContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">`;
+        const definitions = appState.shuffledTerms.map(t => t.definition);
+        shuffle(definitions).forEach((def, i) => {
+            const id = 'def-' + i;
+            content += `<div id="${id}" draggable="true" style="background: #1a1a2e; border: 2px solid #00ffcc; padding: 15px; border-radius: 8px; cursor: move; color: #00ffcc; font-weight: bold;">${def}</div>`;
+        });
+        content += `</div><div id="dropZone" style="background: #0f0f1e; border: 3px dashed #ff007f; border-radius: 8px; padding: 30px; text-align: center; color: #ff007f; min-height: 100px; display: flex; align-items: center; justify-content: center;">Drop correct answer here</div>`;
+    }
+
+    content += `<button onclick="showHomeScreen()" style="width: 100%; margin-top: 20px; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button></div>`;
+    document.querySelector('main').style.backgroundColor = '#0a0a0a';
+    document.querySelector('main').innerHTML = content;
+    if (appState.currentQuizMode === 'drag-drop') {
+        setupDragAndDrop();
+    }
+}
+
+function setupDragAndDrop() {
+    const dragElements = document.querySelectorAll('[draggable="true"]');
+    const dropZone = document.getElementById('dropZone');
+    dragElements.forEach(el => {
+        el.addEventListener('dragstart', (e) => {
+            appState.draggedElement = el;
+            el.style.opacity = '0.5';
+        });
+        el.addEventListener('dragend', (e) => {
+            el.style.opacity = '1';
+        });
+    });
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = '#2a2a3e';
+    });
+    dropZone.addEventListener('dragleave', (e) => {
+        dropZone.style.backgroundColor = '#0f0f1e';
+    });
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!appState.draggedElement) return;
+        const term = appState.shuffledTerms[appState.currentQuizIndex];
+        const isCorrect = appState.draggedElement.textContent === term.definition;
+        if (isCorrect) {
+            appState.score.correct++;
+            showFeedback('Correct!', '#00ff00');
+        } else {
+            showFeedback('Incorrect!', '#ff3333');
+        }
+        setTimeout(() => {
+            appState.currentQuizIndex++;
+            showQuizScreen();
+        }, 1500);
+    });
+}
+
+function checkAnswer(userAnswer) {
+    const correct = appState.shuffledTerms[appState.currentQuizIndex];
+    const isCorrect = (userAnswer === 'true' ? true : false) === correct.isTrue;
+    if (isCorrect) {
+        appState.score.correct++;
+        showFeedback('Correct!', '#00ff00');
+    } else {
+        showFeedback('Incorrect!', '#ff3333');
+    }
+    setTimeout(() => {
+        appState.currentQuizIndex++;
+        showQuizScreen();
+    }, 1500);
+}
+
+function checkAnswerMultiple(id, answer) {
+    const correct = appState.shuffledTerms[appState.currentQuizIndex];
+    const isCorrect = answer === correct.definition;
+    if (isCorrect) {
+        appState.score.correct++;
+        showFeedback('Correct!', '#00ff00');
+    } else {
+        showFeedback('Incorrect!', '#ff3333');
+    }
+    setTimeout(() => {
+        appState.currentQuizIndex++;
+        showQuizScreen();
+    }, 1500);
+}
+
+function checkFillBlank() {
+    const input = document.getElementById('answerInput');
+    if (!input || !input.value.trim()) {
+        alert('Please enter an answer!');
+        return;
+    }
+    const userAnswer = input.value.trim().toLowerCase();
+    const correct = appState.shuffledTerms[appState.currentQuizIndex].term.toLowerCase();
+    if (userAnswer === correct) {
+        appState.score.correct++;
+        showFeedback('Correct!', '#00ff00');
+    } else {
+        showFeedback('Incorrect!', '#ff3333');
+    }
+    setTimeout(() => {
+        appState.currentQuizIndex++;
+        showQuizScreen();
+    }, 1500);
+}
+
+function showFeedback(message, color) {
+    const feedback = document.createElement('div');
+    feedback.textContent = message;
+    feedback.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); color: ${color}; padding: 30px 50px; border-radius: 10px; font-size: 24px; font-weight: bold; border: 2px solid ${color}; z-index: 1000; box-shadow: 0 0 30px ${color};`;
+    document.body.appendChild(feedback);
+    setTimeout(() => feedback.remove(), 1500);
+}
+
+function showResultsScreen() {
+    const percentage = Math.round((appState.score.correct / appState.score.total) * 100);
+    const message = percentage === 100 ? 'Perfect!' : percentage >= 80 ? 'Great!' : 'Keep trying!';
+    const main = document.querySelector('main');
+    main.style.backgroundColor = '#0a0a0a';
+    main.innerHTML = `<div style="padding: 40px 20px; max-width: 600px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 100vh;">
+        <h2 style="color: #00ffcc;">Results</h2>
+        <div style="background: #1a1a2e; border: 2px solid #00ffcc; border-radius: 8px; padding: 30px; margin-bottom: 20px;">
+            <div style="font-size: 60px; color: #00ffcc; font-weight: bold; margin-bottom: 10px;">${appState.score.correct}/${appState.score.total}</div>
+            <div style="font-size: 36px; color: #ff007f; font-weight: bold; margin-bottom: 20px;">${percentage}%</div>
+            <p style="color: #00ffcc; font-size: 20px; margin: 0;">${message}</p>
+        </div>
+        <button onclick="startQuiz('${appState.currentQuizMode}')" style="width: 100%; background: #00ffcc; color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 10px;">Play Again</button>
+        <button onclick="showHomeScreen()" style="width: 100%; background: #333; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Home</button>
+    </div>`;
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+    return a;
+}
+
+function getRandomWrong(correct, count) {
+    const all = appState.userTerms.map(t => t.definition);
+    const wrong = all.filter(a => a !== correct);
+    if (wrong.length === 0) {
+        return ['Sample answer 1', 'Sample answer 2', 'Sample answer 3'].slice(0, count);
+    }
+    if (wrong.length < count) {
+        const needed = count - wrong.length;
+        const generic = ['Sample answer ' + (count + 1), 'Sample answer ' + (count + 2), 'Sample answer ' + (count + 3)];
+        return shuffle([...wrong, ...generic.slice(0, needed)]);
+    }
+    return shuffle(wrong).slice(0, count);
+}
