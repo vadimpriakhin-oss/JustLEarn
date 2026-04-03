@@ -25,9 +25,9 @@ const DEFAULT_TERMS = [
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    initSplashScreen();
     loadLearnChiks();
     registerServiceWorker();
-    initSplashScreen();
     showDashboard();
 });
 
@@ -235,9 +235,9 @@ function saveLearnChikAndReturn() {
 
 function saveChik() {
     const name = appState.editingChik.name.trim();
-    if (!name) { alert('Введите название!'); return; }
+    if (!name) { alert('Please enter a name!'); return; }
     const terms = appState.editingChik.terms.filter(t => t.term.trim() && t.definition.trim());
-    if (terms.length === 0) { alert('Добавьте хотя бы один термин!'); return; }
+    if (terms.length === 0) { alert('Please add at least one term!'); return; }
     const learnChik = {
         id: generateLearnChikId(),
         name,
@@ -246,7 +246,7 @@ function saveChik() {
     };
     appState.learnChiks.push(learnChik);
     saveLearnChiks();
-    alert('LearnChik сохранён!');
+    alert('LearnChik saved!');
     showDashboard();
 }
 
