@@ -1,55 +1,38 @@
-'use strict';
-
-const CACHE_NAME = 'my-cache-v1';
-const urlsToCache = [
+const CACHE_NAME = 'justlearn-v2';
+const FILES_TO_CACHE = [
     '/index.html',
-    '/styles/main.css',
-    '/script/main.js'
+    '/app.js',
+    '/styles.css',
+    '/manifest.json',
+    '/icon-192.png',
+    '/icon-512.png',
 ];
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                return cache.addAll(urlsToCache).catch((err) => {
-                    console.error('Cache addAll failed:', err);
-                });
-            })
+        caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
     );
+    self.skipWaiting();
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(keys =>
+            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+        )
+    );
+    self.clients.claim();
+});
+
+self.addEventListener('fetch', event => {
     event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                if (!response || response.status !== 200) {
-                    throw new Error('Network response was not ok');
+        caches.match(event.request).then(response => {
+            if (response) return response;
+            return fetch(event.request).catch(() => {
+                if (event.request.mode === 'navigate') {
+                    return caches.match('/index.html');
                 }
-                return response;
-            })
-            .catch(async (error) => {
-                console.error('Fetch failed; returning offline page instead.', error);
-                const cache = await caches.open(CACHE_NAME);
-                return cache.match('/index.html');
-            })
-    );
-});
-
-self.addEventListener('activate', (event) => {
-    const cacheWhitelist = [CACHE_NAME];
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map(async (cacheName) => {
-                    if (!cacheWhitelist.includes(cacheName)) {
-                        try {
-                            await caches.delete(cacheName);
-                        } catch (error) {
-                            console.error('Cache deletion failed:', error);
-                        }
-                    }
-                })
-            );
+            });
         })
     );
 });
