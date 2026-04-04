@@ -15,14 +15,6 @@ let appState = {
     draggedElement: null
 };
 
-const DEFAULT_TERMS = [
-    { term: 'Photosynthesis', definition: 'Process by which plants convert sunlight into chemical energy' },
-    { term: 'Mitochondria',   definition: 'Powerhouse of the cell responsible for energy production' },
-    { term: 'Osmosis',        definition: 'Movement of water across a semipermeable membrane' },
-    { term: 'Enzyme',         definition: 'Protein that speeds up chemical reactions in cells' },
-    { term: 'DNA',            definition: 'Molecule that carries genetic instructions for life' },
-];
-
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initSplashScreen();
@@ -223,16 +215,6 @@ function showStudyModeSelection() {
     );
 }
 
-function saveLearnChikAndReturn() {
-    const nameInput = document.getElementById('learnChikNameInput');
-    if (nameInput) appState.learnChikName = nameInput.value;
-    appState.userTerms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim());
-    if (saveNewLearnChik()) {
-        alert('LearnChik saved!');
-        showDashboard();
-    }
-}
-
 function saveChik() {
     const name = appState.editingChik.name.trim();
     if (!name) { alert('Please enter a name!'); return; }
@@ -352,7 +334,8 @@ function showQuizScreen() {
             '<input type="text" id="answerInput" class="fill-input" placeholder="Type the term..." autocomplete="off" />' +
             '<button class="btn btn-primary" id="btnSubmitFill">Submit</button>';
     } else if (appState.currentQuizMode === 'drag-drop') {
-        const defs = shuffle(appState.shuffledTerms.map(t => t.definition));
+        const wrongDefs = getRandomWrong(term.definition, 3);
+        const defs = shuffle([term.definition, ...wrongDefs]);
         questionHtml = '<div id="dragContainer" class="drag-container">';
         defs.forEach(def => {
             questionHtml += '<div class="drag-item" draggable="true" data-def="' + escapeAttr(def) + '">' + escapeHtml(def) + '</div>';
