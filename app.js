@@ -4,13 +4,10 @@ let appState = {
     currentLearnChikId: null,
     activeChik: null,
     editingChik: null,
-    userTerms: [],
-    learnChikName: '',
     currentQuizIndex: 0,
     score: { correct: 0, total: 0 },
     currentQuizMode: null,
     shuffledTerms: [],
-    currentAnswerId: null,
     currentTfAnswer: null,
     draggedElement: null
 };
@@ -39,7 +36,7 @@ function initSplashScreen() {
     const splash = document.getElementById('splash-screen');
     if (!splash) return;
     splash.classList.add('fly-away');
-    setTimeout(() => { splash.style.display = 'none'; }, 3500);
+    setTimeout(() => { splash.style.display = 'none'; }, 2500);
 }
 
 // ── LearnChik Utilities ─────────────────────────────────────────────────────
@@ -67,28 +64,6 @@ function saveLearnChiks() {
     }
 }
 
-function saveNewLearnChik() {
-    const name = appState.learnChikName.trim();
-    if (!name) {
-        alert('Please enter a name for your LearnChik!');
-        return false;
-    }
-    const terms = appState.userTerms.filter(t => t.term.trim() && t.definition.trim());
-    if (terms.length === 0) {
-        alert('Add at least one term!');
-        return false;
-    }
-    const learnChik = {
-        id: generateLearnChikId(),
-        name: name,
-        createdAt: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'medium' }),
-        terms: terms
-    };
-    appState.learnChiks.push(learnChik);
-    saveLearnChiks();
-    return true;
-}
-
 function deleteLearnChik(id) {
     if (!confirm('Delete this LearnChik? This cannot be undone.')) return;
     appState.learnChiks = appState.learnChiks.filter(lc => lc.id !== id);
@@ -100,7 +75,6 @@ function selectLearnChik(id) {
     const learnChik = appState.learnChiks.find(lc => lc.id === id);
     if (!learnChik) return;
     appState.currentLearnChikId = id;
-    appState.userTerms = learnChik.terms;
     showStudyModeSelection();
 }
 
@@ -115,7 +89,7 @@ function showDashboard() {
         '<div class="header-text"><h1>JustLEarn</h1><p>Your Study Sets</p></div>' +
         '</div>' +
         '<div class="dashboard-main">' +
-        '<button class="btn btn-danger btn-large" onclick="showCreateLearnChikScreen()">🆕 Create New LearnChik</button>' +
+        '<button class="btn btn-primary btn-large" onclick="showCreateLearnChikScreen()">🆕 Create New LearnChik</button>' +
         '<button class="btn btn-primary btn-large" onclick="showMyLearnChiks()">📚 My LearnChiks</button>' +
         '</div>' +
         '</div>'
@@ -196,7 +170,7 @@ function showStudyModeSelection() {
     appState.currentScreen = 'study-modes';
     const learnChik = appState.learnChiks.find(lc => lc.id === appState.currentLearnChikId);
     const name = learnChik ? learnChik.name : 'Unknown';
-    const count = appState.userTerms.length;
+    const count = learnChik ? learnChik.terms.length : 0;
     render(
         '<div class="screen">' +
         '<header class="top-bar">' +
@@ -284,8 +258,8 @@ function startQuiz(mode) {
     appState.activeChik = chik;
     appState.currentQuizMode = mode;
     appState.currentQuizIndex = 0;
-    appState.score = { correct: 0, total: chik.terms.length };
     appState.shuffledTerms = shuffle([...chik.terms]);
+    appState.score = { correct: 0, total: appState.shuffledTerms.length };
     showQuizScreen();
 }
 
