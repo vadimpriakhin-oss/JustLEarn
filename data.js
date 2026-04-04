@@ -2,23 +2,23 @@
 
 function safeExecute(fn) {
     try {
-        // Validate function input to prevent XSS
         if (typeof fn !== 'function') {
             throw new Error('Invalid function');
         }
-        fn(); // Execute the safe function
+        fn();
     } catch (error) {
         console.error('Error during execution:', error.message);
-        // Better error handling
     }
 }
 
-// Function to handle user input with XSS protection
+// Function to handle user input with XSS protection using native escaping
 function handleUserInput(input) {
-    const sanitizedInput = DOMPurify.sanitize(input); // Use a library for sanitization
+    const sanitizedInput = String(input)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     console.log('Sanitized Input:', sanitizedInput);
-    // Further processing with sanitized input
+    return sanitizedInput;
 }
-
-// Example usage of safeExecute
-safeExecute(() => handleUserInput('<script>alert(1)</script>'));
