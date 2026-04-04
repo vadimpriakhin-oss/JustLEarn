@@ -39,7 +39,7 @@ function initSplashScreen() {
     const splash = document.getElementById('splash-screen');
     if (!splash) return;
     splash.classList.add('fly-away');
-    setTimeout(() => { splash.style.display = 'none'; }, 3500);
+    setTimeout(() => { splash.style.display = 'none'; }, 2600);
 }
 
 // ── LearnChik Utilities ─────────────────────────────────────────────────────
