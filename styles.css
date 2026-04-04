@@ -458,70 +458,67 @@ html, body {
   text-align: center;
 }
 
-/* ── Splash Screen Animations ────────────────────────────────────────────── */
-@keyframes splashGlow {
+/* ── Splash Screen ───────────────────────────────────────────────────────── */
+/*
+  Единая непрерывная анимация: появление → зависание → влёт в букву Е → вспышка → исчезновение.
+  Нет пауз между фазами, нет заморозки в конце (нет forwards на самом логотипе).
+  Скрытие сплэша делается через JS по событию animationend.
+
+  Тайминг (total 3.2s):
+    0–100%   (~3.2s)  единственная непрерывная анимация без пауз
+*/
+@keyframes splashFull {
+  /* === Фаза 1: появление === */
   0% {
     opacity: 0;
-    text-shadow: 0 0 10px #00ffcc;
     transform: scale(0.5);
+    filter: brightness(1);
+    text-shadow: 0 0 10px #00ffcc;
   }
-  50% {
+  20% {
     opacity: 1;
+    transform: scale(1.05);
+    filter: brightness(1.1);
     text-shadow: 0 0 40px #00ffff, 0 0 60px #00ffcc;
   }
-  100% {
+  /* === Фаза 3: влёт в Е — нарастание яркости и масштаба === */
+  65% {
     opacity: 1;
-    text-shadow: 0 0 30px #00ffcc, 0 0 50px #00ffff;
-    transform: scale(1);
+    transform: scale(5);
+    filter: blur(0px) brightness(1.8);
+    text-shadow: 0 0 80px #00ffcc, 0 0 140px #00ffff, 0 0 200px #aaffee;
   }
-}
-
-/* Камера летит вперёд — надпись масштабируется в бесконечность (влетаем в букву Е) */
-/* По мере приближения буква Е разгорается ярче и ярче — финал почти как вспышка */
-@keyframes splashZoomInto {
-  0% {
+  78% {
     opacity: 1;
-    transform: scale(1);
-    filter: blur(0px) brightness(1);
-    text-shadow: 0 0 30px #00ffcc, 0 0 50px #00ffff;
+    transform: scale(14);
+    filter: blur(2px) brightness(3.5);
+    text-shadow: 0 0 120px #fff, 0 0 220px #00ffcc, 0 0 320px #00ffff;
   }
-  30% {
+  88% {
     opacity: 1;
-    transform: scale(4);
-    filter: blur(0px) brightness(1.4);
-    text-shadow: 0 0 60px #00ffcc, 0 0 100px #00ffff, 0 0 140px #aaffee;
+    transform: scale(24);
+    filter: blur(7px) brightness(7);
+    text-shadow: 0 0 200px #fff, 0 0 360px #ffffff;
   }
-  60% {
-    opacity: 1;
-    transform: scale(12);
-    filter: blur(1px) brightness(2.5);
-    text-shadow: 0 0 80px #fff, 0 0 160px #00ffcc, 0 0 260px #00ffff;
-  }
-  80% {
-    opacity: 1;
-    transform: scale(22);
-    filter: blur(4px) brightness(5);
-    text-shadow: 0 0 120px #fff, 0 0 220px #00ffcc, 0 0 350px #ffffff;
-  }
-  92% {
-    opacity: 0.9;
-    transform: scale(28);
-    filter: blur(10px) brightness(8);
-    text-shadow: 0 0 200px #fff, 0 0 350px #ffffff;
+  95% {
+    opacity: 0.7;
+    transform: scale(30);
+    filter: blur(14px) brightness(12);
+    text-shadow: 0 0 300px #fff;
   }
   100% {
     opacity: 0;
-    transform: scale(30);
-    filter: blur(20px) brightness(12);
-    text-shadow: 0 0 300px #fff;
+    transform: scale(35);
+    filter: blur(20px) brightness(15);
+    text-shadow: 0 0 400px #fff;
   }
 }
 
-/* Белая вспышка поверх всего экрана в финале */
+/* Белая вспышка поверх экрана — синхронизирована с фазой 3 */
 @keyframes splashFlash {
   0%   { opacity: 0; }
-  70%  { opacity: 0; }
-  88%  { opacity: 0.85; }
+  80%  { opacity: 0; }
+  92%  { opacity: 0.9; }
   100% { opacity: 0; }
 }
 
@@ -536,8 +533,9 @@ html, body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  perspective: 600px;
   overflow: hidden;
+  /* плавное скрытие самого контейнера через transition в JS */
+  transition: opacity 0.3s ease;
 }
 
 /* Белый оверлей-вспышка */
@@ -552,25 +550,20 @@ html, body {
 }
 
 #splash-screen.fly-away::after {
-  animation: splashFlash 1.2s cubic-bezier(0.4, 0, 1, 1) 2s forwards;
+  animation: splashFlash 3.2s ease-in-out forwards;
 }
 
 #splash-logo {
   font-size: 80px;
   font-weight: bold;
   color: #00ffcc;
-  animation: splashGlow 2s ease-in-out forwards;
   transform-origin: center center;
   will-change: transform, opacity, filter;
 }
 
+/* Запускаем единую анимацию — без forwards чтобы не зависать в конце */
 #splash-screen.fly-away #splash-logo {
-  animation: splashGlow 2s ease-in-out, splashZoomInto 1.2s cubic-bezier(0.4, 0, 1, 1) 2s forwards;
-}
-
-#splash-screen.fly-into #splash-logo {
-  animation: splashGlow 2s ease-in-out, splashZoomInto 1.2s cubic-bezier(0.4, 0, 1, 1) 2s forwards;
-  transform: scale(1.25) perspective(600px);
+  animation: splashFull 3.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
