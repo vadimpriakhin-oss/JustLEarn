@@ -1,4 +1,4 @@
-/* ── Reset & Base ────────────────────────────────────────────────────────── */
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -477,21 +477,52 @@ html, body {
 }
 
 /* Камера летит вперёд — надпись масштабируется в бесконечность (влетаем в букву Е) */
+/* По мере приближения буква Е разгорается ярче и ярче — финал почти как вспышка */
 @keyframes splashZoomInto {
   0% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0px);
+    filter: blur(0px) brightness(1);
+    text-shadow: 0 0 30px #00ffcc, 0 0 50px #00ffff;
+  }
+  30% {
+    opacity: 1;
+    transform: scale(4);
+    filter: blur(0px) brightness(1.4);
+    text-shadow: 0 0 60px #00ffcc, 0 0 100px #00ffff, 0 0 140px #aaffee;
   }
   60% {
     opacity: 1;
-    filter: blur(0px);
+    transform: scale(12);
+    filter: blur(1px) brightness(2.5);
+    text-shadow: 0 0 80px #fff, 0 0 160px #00ffcc, 0 0 260px #00ffff;
+  }
+  80% {
+    opacity: 1;
+    transform: scale(22);
+    filter: blur(4px) brightness(5);
+    text-shadow: 0 0 120px #fff, 0 0 220px #00ffcc, 0 0 350px #ffffff;
+  }
+  92% {
+    opacity: 0.9;
+    transform: scale(28);
+    filter: blur(10px) brightness(8);
+    text-shadow: 0 0 200px #fff, 0 0 350px #ffffff;
   }
   100% {
     opacity: 0;
     transform: scale(30);
-    filter: blur(20px);
+    filter: blur(20px) brightness(12);
+    text-shadow: 0 0 300px #fff;
   }
+}
+
+/* Белая вспышка поверх всего экрана в финале */
+@keyframes splashFlash {
+  0%   { opacity: 0; }
+  70%  { opacity: 0; }
+  88%  { opacity: 0.85; }
+  100% { opacity: 0; }
 }
 
 #splash-screen {
@@ -507,6 +538,21 @@ html, body {
   z-index: 9999;
   perspective: 600px;
   overflow: hidden;
+}
+
+/* Белый оверлей-вспышка */
+#splash-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+#splash-screen.fly-away::after {
+  animation: splashFlash 1.2s cubic-bezier(0.4, 0, 1, 1) 2s forwards;
 }
 
 #splash-logo {
